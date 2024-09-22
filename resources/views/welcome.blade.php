@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-    <title>Home</title>
+    <title>Daily Bangladesh</title>
 </head>
 <style>
     * {
@@ -181,7 +181,7 @@
     }
 
     .post .title h4 {
-        font-size: 16px;
+        font-size: 14px;
         text-align: left;
         font-weight: 600;
         -webkit-line-clamp: 2;
@@ -206,21 +206,61 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-bottom: none;
     }
+
+    .post a.post-list:not(:last-child) {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+    }
+
+    .post a.post-list:last-child {
+        border-bottom: none;
+    }
+
 
     a {
         text-decoration: none;
         color: transparent;
     }
 
-    .post-content {
+    .post-list:hover h4 {
+        color: #007377;
+    }
+
+    .one-post:hover h3 {
+        color: #007377;
+    }
+
+    .hover-effect:hover .text-block span {
+        color: rgb(224, 79, 79);
+    }
+
+    #btn1,
+    #btn2 {
+        border-radius: 0;
         border-bottom: 1px solid #ddd;
     }
 
-    @media (max-width: 1280px) {
-        .container {
-            margin: 0 5px;
-        }
+    .news-list li {
+        font-size: 14px;
+        list-style: none;
+        color: #ddd;
+    }
+
+    .list-dot {
+        display: flex;
+        align-items: center;
+    }
+
+    .list-dot .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: green;
+        margin: 0 10px;
     }
 </style>
 
@@ -231,7 +271,7 @@
             <nav class="navbar navbar-expand-lg navbar-dark d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center justify-content-center gap-2" style="color: #333; font-size:14px">
                     <i class="ri-calendar-fill"></i>
-                    <span>মঙ্গলবার , ১৭ সেপ্টেম্বর ২০২৪ , ২ আশ্বিন ১৪৩১</span>
+                    <span id="formattedDate"></span>
                 </div>
                 <div class="d-flex align-items-center gap-3 lang-botton">
                     <a href="">English</a>
@@ -276,7 +316,7 @@
 
     <header class="link-header sticky-top">
         <div class="container">
-            <nav class="navbar navbar-expand-lg p-0">
+            <nav class="navbar navbar-expand p-0">
                 <div class="navbar-nav">
                     <div class="nav-item dropdown">
                         <a class="nav-link" href="#">
@@ -332,9 +372,9 @@
     {{-- main content  --}}
 
     <div class="container xl-m-0">
-        <div class="row py-2">
+        <div class="row py-2 border-bottom">
             <div class="col-6 p-1">
-                <a href="">
+                <a href="" class="one-post">
                     <div class="news">
                         <div class="img">
                             <img src="{{ asset('image/886-1726671367.jpg') }}" class="img-fluid" alt="">
@@ -357,11 +397,94 @@
                         <div class="border"></div>
                     </div>
                 </a>
+                <div class="row">
+                    <div class="col-6 border-right">
+                        <a href="#">
+                            <div class="mt-1">
+                                <h3
+                                    style="
+                                    font-size: 17px;
+                                    line-height: 27px;
+                                    padding: 5px 2px 0 2px;
+                                    color: #222;
+                                    font-weight: 600;
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;">
+                                    প্রাথমিকভাবে শহিদ পরিবার পাবে ৫ লাখ টাকা, আহত ব্যক্তি ১ লাখ
+                                </h3>
+                                <div class="text">
+                                    <span
+                                        style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 5;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        color: #333;
+                                        font-size: 14px;">
+                                        গণঅভ্যুত্থানে নিহত শহিদদের প্রত্যেক পরিবার প্রাথমিকভাবে ৫ লাখ টাকা এবং আহত
+                                        প্রত্যেক ব্যক্তি প্রাথমিকভাবে সর্বোচ্চ এক লাখ টাকা করে দেওয়ার সিদ্ধান্ত হয়েছে।
+                                        বুধবার অন্তর্বর্তীকালীন সরকারের প্রধান উপদেষ্টা ড. মুহাম্মদ ইউনূসের সভাপতিত্বে
+                                        জুলাই শহিদ স্মৃতি ফাউন্ডেশনের কার্যনির্বাহী কমিটির প্রথম বৈঠকে এ সিদ্ধান্ত...
+                                    </span>
+                                </div>
+                                <div class="time px-1">
+                                    <i class="ri-time-fill"></i>
+                                    <span>১ ঘণ্টা আগে</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#">
+                            <div class="mt-1">
+                                <h3
+                                    style="
+                                    font-size: 17px;
+                                    line-height: 27px;
+                                    padding: 5px 2px 0 2px;
+                                    color: #222;
+                                    font-weight: 600;
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;">
+                                    প্রাথমিকভাবে শহিদ পরিবার পাবে ৫ লাখ টাকা, আহত ব্যক্তি ১ লাখ
+                                </h3>
+                                <div class="text">
+                                    <span
+                                        style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 5;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        color: #333;
+                                        font-size: 14px;">
+                                        গণঅভ্যুত্থানে নিহত শহিদদের প্রত্যেক পরিবার প্রাথমিকভাবে ৫ লাখ টাকা এবং আহত
+                                        প্রত্যেক ব্যক্তি প্রাথমিকভাবে সর্বোচ্চ এক লাখ টাকা করে দেওয়ার সিদ্ধান্ত হয়েছে।
+                                        বুধবার অন্তর্বর্তীকালীন সরকারের প্রধান উপদেষ্টা ড. মুহাম্মদ ইউনূসের সভাপতিত্বে
+                                        জুলাই শহিদ স্মৃতি ফাউন্ডেশনের কার্যনির্বাহী কমিটির প্রথম বৈঠকে এ সিদ্ধান্ত...
+                                    </span>
+                                </div>
+                                <div class="time px-1">
+                                    <i class="ri-time-fill"></i>
+                                    <span>১ ঘণ্টা আগে</span>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
             </div>
 
             <div class="col-3 p-2 py-1">
-                <div class="border p-2 post">
-                    <a href="">
+                <div class="p-2 post">
+                    <a href="" class="post-list">
                         <div class="post-content">
                             <div style="display: flex; flex-direction:row; gap:5px;">
                                 <div class="img">
@@ -390,7 +513,7 @@
                         </div>
                     </a>
 
-                    <a href="">
+                    <a href="" class="post-list">
                         <div class="post-content">
                             <div style="display: flex; flex-direction:row; gap:5px;">
                                 <div class="img">
@@ -418,7 +541,7 @@
                         </div>
                     </a>
 
-                    <a href="">
+                    <a href="" class="post-list">
                         <div class="post-content">
                             <div style="display: flex; flex-direction:row; gap:5px;">
                                 <div class="img">
@@ -448,7 +571,7 @@
                         </div>
                     </a>
 
-                    <a href="">
+                    <a href="" class="post-list">
                         <div class="post-content">
                             <div style="display: flex; flex-direction:row; gap:5px;">
                                 <div class="img">
@@ -482,11 +605,248 @@
             </div>
 
             <div class="col-3 p-1">
+                <div class="border">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-danger w-50" id="btn1"
+                            onclick="toggleButton(this, 'btn2')">সর্বশেষ</button>
+                        <button type="button" class="btn btn-light w-50" id="btn2"
+                            onclick="toggleButton(this, 'btn1')">সর্বাধিক</button>
+                    </div>
+                    <div style="height: 595px; overflow:auto;">
 
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a> <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                        <a href="#" class="hover-effect"
+                            style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
+                            <div class="d-flex p-1">
+                                <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
+                                <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
+                                    <span>নারীকে দুই ঘণ্টা পেঁচিয়ে রাখলো বিশাল অজগর</span>
+                                </div>
+                            </div>
+                            <div class="time mx-2" style="padding-top:0">
+                                <i class="ri-time-fill"></i>
+                                <span>১ ঘণ্টা আগে</span>
+                            </div>
+                        </a>
+                    </div>
+                    <a href="" class="btn-sm btn btn-secondary w-100 rounded-0">সব
+                        খবর</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    {{-- backing news bottom  ------------- --}}
+
+    <div class="fixed-bottom bg-secondary text-white row">
+        <button class="btn btn-danger btn-sm rounded-0 col-2">শীর্ষ সংবাদ:</button>
+        <marquee behavior="" direction="" class="col-10 d-flex align-items-center" onmouseover="this.stop();"
+            onmouseout="this.start();">
+            <div class="d-flex gap-3 news-list">
+                <div class="list-dot">
+                    <div class="dot"></div>
+                    <li>তোফাজ্জল হত্যায় ঢাকা বিশ্ববিদ্যালয়ের ৮ শিক্ষার্থী বহিষ্কার</li>
+                </div>
+                <div class="list-dot">
+                    <div class="dot"></div>
+                    <li>রাজধানীর বারিধারা থেকে সাবেক পানিসম্পদ প্রতিমন্ত্রী জাহিদ ফারুককে গ্রেফতার করেছে র‌্যাব</li>
+                </div>
+                <div class="list-dot">
+                    <div class="dot"></div>
+                    <li>ডেঙ্গুতে একদিনে আরো ৬ জনের মৃত্যু, আক্রান্ত ৯২৬ জন</li>
+                </div>
+            </div>
+        </marquee>
+    </div>
+
+    {{-- video gallery -------------------------- --}}
+
+    <div class="container mt-1">
+        <div class="video-gallery row px-3 py-4" style="background: #111">
+            <div class="type pb-4 d-flex align-items-center gap-2"
+                style="font-size: 20px; font-weight:700; color:#ddd; padding-left:3px; line-height:normal;">
+                <i class="ri-film-line"></i>
+                <span>ভিডিও গ্যালারি</span>
+            </div>
+            <div class="col-6 py-1 px-1">
+                <a href="" style="background: #333; display:block">
+                    <video controls class="w-100">
+                        <source src="{{ asset('video/b.webM') }}" type="video/mp4">
+                    </video>
+                    <div class="title" style="padding: 2px 7px 7px 10px;">
+                        <span style="color: #eee; font-size:22px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা. মুস্তাফিজুর
+                            রহমান ইরান</span>
+                    </div>
+                    <div class="time mx-2" style="padding-top:0; font-size:14px; color:#a7a7a7; padding-bottom:10px;">
+                        <i class="ri-time-fill"></i>
+                        <span>১ ঘণ্টা আগে</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 py-1 px-1">
+                        <a href="" class="p-2" style="background: #333; display:block">
+                            <video controls class="w-100">
+                                <source src="{{ asset('video/fg.webM') }}" type="video/mp4">
+                            </video>
+                            <div class="title">
+                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                                    মুস্তাফিজুর
+                                    রহমান ইরান</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 py-1 px-1">
+                        <a href="" class="p-2" style="background: #333; display:block">
+                            <video controls class="w-100">
+                                <source src="{{ asset('video/dfg.webM') }}" type="video/mp4">
+                            </video>
+                            <div class="title">
+                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                                    মুস্তাফিজুর
+                                    রহমান ইরান</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 py-1 px-1">
+                        <a href="" class="p-2" style="background: #333; display:block">
+                            <video controls class="w-100">
+                                <source src="{{ asset('video/g.webM') }}" type="video/mp4">
+                            </video>
+                            <div class="title">
+                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                                    মুস্তাফিজুর
+                                    রহমান ইরান</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 py-1 px-1">
+                        <a href="" class="p-2" style="background: #333; display:block">
+                            <video controls class="w-100">
+                                <source src="{{ asset('video/k.webM') }}" type="video/mp4">
+                            </video>
+                            <div class="title">
+                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                                    মুস্তাফিজুর
+                                    রহমান ইরান</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="{{ asset('js/main.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
