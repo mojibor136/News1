@@ -216,7 +216,7 @@
         padding-bottom: 5px;
     }
 
-    .post a.post-list:last-child {
+    .post a .post-list:last-child {
         border-bottom: none;
     }
 
@@ -261,6 +261,22 @@
         border-radius: 50%;
         background: green;
         margin: 0 10px;
+    }
+
+    #border a {
+        border-bottom: 1px solid #ddd;
+    }
+
+    #border a:last-child {
+        border: none;
+    }
+
+    #border a:hover .title span {
+        color: #007377;
+    }
+
+    #hover:hover .title span {
+        color: #007377;
     }
 </style>
 
@@ -774,12 +790,12 @@
                 <span>ভিডিও গ্যালারি</span>
             </div>
             <div class="col-6 py-1 px-1">
-                <a href="" style="background: #333; display:block">
+                <a href="" style="background: #333; display:block" id="hover">
                     <video controls class="w-100">
                         <source src="{{ asset('video/b.webM') }}" type="video/mp4">
                     </video>
-                    <div class="title" style="padding: 2px 7px 7px 10px;">
-                        <span style="color: #eee; font-size:22px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা. মুস্তাফিজুর
+                    <div class="title" style="padding: 2px 7px 7px 10px; color: #eee; font-size:22px;">
+                        <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা. মুস্তাফিজুর
                             রহমান ইরান</span>
                     </div>
                     <div class="time mx-2" style="padding-top:0; font-size:14px; color:#a7a7a7; padding-bottom:10px;">
@@ -792,24 +808,24 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block">
+                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
                             <video controls class="w-100">
                                 <source src="{{ asset('video/fg.webM') }}" type="video/mp4">
                             </video>
-                            <div class="title">
-                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                            <div class="title" style="color: #eee; font-size:15px;">
+                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
                                     মুস্তাফিজুর
                                     রহমান ইরান</span>
                             </div>
                         </a>
                     </div>
                     <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block">
+                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
                             <video controls class="w-100">
                                 <source src="{{ asset('video/dfg.webM') }}" type="video/mp4">
                             </video>
-                            <div class="title">
-                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                            <div class="title" style="color: #eee; font-size:15px;">
+                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
                                     মুস্তাফিজুর
                                     রহমান ইরান</span>
                             </div>
@@ -818,26 +834,185 @@
                 </div>
                 <div class="row">
                     <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block">
+                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
                             <video controls class="w-100">
                                 <source src="{{ asset('video/g.webM') }}" type="video/mp4">
                             </video>
-                            <div class="title">
-                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                            <div class="title" style="color: #eee; font-size:15px;">
+                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
                                     মুস্তাফিজুর
                                     রহমান ইরান</span>
                             </div>
                         </a>
                     </div>
                     <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block">
+                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
                             <video controls class="w-100">
                                 <source src="{{ asset('video/k.webM') }}" type="video/mp4">
                             </video>
-                            <div class="title">
-                                <span style="color: #eee; font-size:15px;">শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
+                            <div class="title" style="color: #eee; font-size:15px;">
+                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
                                     মুস্তাফিজুর
                                     রহমান ইরান</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- news list --------- --}}
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-6 p-0 px-2">
+                <div class="type py-2"
+                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    <i class="ri-file-text-line"></i>
+                    <span>জাতীয়</span>
+                </div>
+                <div class="row">
+                    <div class="col-6" style="padding-left: 12px;">
+                        <a href="" style="padding:16px 0;" class="d-block" id="hover">
+                            <div class="img">
+                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100" alt="">
+                            </div>
+                            <div class="title my-1"
+                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
+                            </div>
+                            <div class="text"
+                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <span>
+                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
+                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6" style="padding-left:5px;" id="border">
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block  py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 p-0 px-2">
+                <div class="type py-2"
+                    style=" border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    <i class="ri-file-text-line"></i>
+                    <span>রাজনীতি</span>
+                </div>
+                <div class="row">
+                    <div class="col-6" style="padding-left: 12px;">
+                        <a href="" style="padding:16px 0;" class="d-block" id="hover">
+                            <div class="img">
+                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
+                                    alt="">
+                            </div>
+                            <div class="title my-1" style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
+                            </div>                            
+                            <div class="text" style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <span>
+                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6" style="padding-left:5px;" id="border">
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="" class="d-block py-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="img" style="width:150px; height:50px;">
+                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                                        alt="">
+                                </div>
+                                <div class="title"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
+                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                </div>
                             </div>
                         </a>
                     </div>
