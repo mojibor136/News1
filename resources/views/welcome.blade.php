@@ -766,7 +766,7 @@
 
     {{-- video gallery -------------------------- --}}
 
-    <div class="container mt-1">
+    <div class="container mt-4">
         <div class="video-gallery row px-3 py-4" style="background: #111">
             <div class="type pb-4 d-flex align-items-center gap-2"
                 style="font-size: 20px; font-weight:700; color:#ddd; padding-left:3px; line-height:normal;">
