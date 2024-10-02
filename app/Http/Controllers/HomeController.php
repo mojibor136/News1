@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller {
     public function Home() {
-        return view( 'welcome' );
+
+        $posts = getPostGroups();
+
+        return view( 'welcome', compact( 'posts' ) );
     }
 }

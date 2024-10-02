@@ -28,6 +28,7 @@ class Post extends Component {
     public $districtsId;
     public $subdistrictsId;
     public $title;
+    public $subtitle;
     public $content;
     public $tag;
     public $image;
@@ -42,14 +43,11 @@ class Post extends Component {
 
     public function CreatePost() {
         $this->validate( [
+            'subtitle' => 'required',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'required|image|max:2400',
             'categoryId' => 'required|exists:categories,id',
-            'subcategoryId' => 'required|exists:sub_categories,id',
-            'districtsId' => 'required|exists:districs,id',
-            'subdistrictsId' => 'required|exists:sub_districs,id',
-            'tag' => 'required|string'
         ] );
 
         if ( auth( 'admin' )->check() ) {
@@ -74,6 +72,7 @@ class Post extends Component {
         }
 
         $post = PostModel::create( [
+            'subtitle' => $this->subtitle,
             'title' => $this->title,
             'description' => $this->content,
             'category_id' => $this->categoryId,
@@ -91,6 +90,7 @@ class Post extends Component {
 
         session()->flash( 'message', 'Post created successfully!' );
         $this->reset(
+            'subtitle',
             'title',
             'content',
             'categoryId',
@@ -110,6 +110,7 @@ class Post extends Component {
     public function editPost( $id ) {
         $post = PostModel::find( $id );
         $this->editPostId = $post->id;
+        $this->subtitle = $post->subtitle;
         $this->title = $post->title;
         $this->categoryId = $post->category_id;
         $this->subcategoryId = $post->subcategory_id;
@@ -121,6 +122,7 @@ class Post extends Component {
 
     public function updatePost() {
         $this->validate( [
+            'subtitle' => 'required',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'categoryId' => 'required|exists:categories,id',
@@ -145,6 +147,7 @@ class Post extends Component {
         }
 
         $post->update( [
+            'subtitle' => $this->subtitle,
             'title' => $this->title,
             'description' => $this->content,
             'category_id' => $this->categoryId,
@@ -158,6 +161,7 @@ class Post extends Component {
 
         session()->flash( 'message', 'Post updated successfully!' );
         $this->reset(
+            'subtitle',
             'title',
             'content',
             'categoryId',
@@ -170,7 +174,7 @@ class Post extends Component {
     }
 
     public function render() {
-        $posts = PostModel::where( 'status', 'approve' )->paginate( 6 );
+        $posts = PostModel::where( 'status', 'approve' )->paginate( 10 );
         return view( 'livewire.post', [ 'posts' => $posts ] );
     }
 }

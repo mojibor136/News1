@@ -14,15 +14,16 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('subtitle');
             $table->text('description');
             $table->Integer('category_id');
             $table->Integer('subcategory_id')->nullable();
-            $table->Integer('district_id'); 
+            $table->Integer('district_id')->nullable(); 
             $table->Integer('subdistrict_id')->nullable();
             $table->string('image')->nullable();
             $table->Integer('author_id');
             $table->string('role');
-            $table->string('slug');
+            $table->string('slug')->nullable();
             $table->string('status');
             $table->timestamps();
         });

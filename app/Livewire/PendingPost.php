@@ -115,7 +115,7 @@ class PendingPost extends Component {
     }
 
     public function render() {
-        $posts = PostModel::where( 'status', 'pending' )->paginate( 6 );
+        $posts = PostModel::where( 'status', 'pending' )->paginate( 10 );
         return view( 'livewire.pending-post', [ 'posts' => $posts ] );
     }
 }

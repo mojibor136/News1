@@ -65,7 +65,7 @@ class Category extends Component {
     }
 
     public function render() {
-        $categories = CategoryModel::paginate( 6 );
+        $categories = CategoryModel::paginate( 10 );
         return view( 'livewire.category', [ 'categories' => $categories ] );
     }
 }

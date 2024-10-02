@@ -43,6 +43,10 @@
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Links -->
+        <div class="mt-3">
+            {{ $sub_districts->links() }}
+        </div>
     </div>
 
     <!-- Add Post Modal -->

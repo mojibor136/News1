@@ -27,7 +27,6 @@ class SubDistrict extends Component {
         ] );
 
         session()->flash( 'message', 'SubDistric created successfully!' );
-        $this->reset( 'district_id' );
         $this->reset( 'name' );
     }
 
@@ -66,7 +65,7 @@ class SubDistrict extends Component {
     }
 
     public function render() {
-        $sub_districts = SubDistric::with( 'district' )->paginate( 6 );
+        $sub_districts = SubDistric::with( 'district' )->paginate( 10 );
         return view( 'livewire.sub-district', [ 'sub_districts' => $sub_districts ] );
     }
 }

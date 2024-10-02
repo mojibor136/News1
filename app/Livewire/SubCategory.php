@@ -27,7 +27,6 @@ class SubCategory extends Component {
         ] );
 
         session()->flash( 'message', 'SubCategory created successfully!' );
-        $this->reset( 'category_id' );
         $this->reset( 'name' );
     }
 
@@ -65,7 +64,7 @@ class SubCategory extends Component {
     }
 
     public function render() {
-        $sub_categories = SubCategoryModel::with( 'category' )->paginate( 6 );
+        $sub_categories = SubCategoryModel::with( 'category' )->paginate( 10 );
         return view( 'livewire.sub-category', compact( 'sub_categories' ) );
     }
 }

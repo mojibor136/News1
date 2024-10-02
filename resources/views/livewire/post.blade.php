@@ -29,8 +29,8 @@
                     @foreach ($posts as $post)
                         <tr>
                             <td>{{ $post->id }}</td>
-                            <td>{{ $post->title }}</td>
-                            <td>{{ $post->description }}</td>
+                            <td>{{ Str::limit($post->title, 20) }}</td>
+                            <td>{{ $post->category->name }}</td>
                             <td>{{ $post->role }}</td>
                             <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>{{ $post->visitors->count() }}</td>
@@ -66,10 +66,28 @@
                     <form wire:submit.prevent="CreatePost">
                         <div class="row mb-3">
                             <div class="col-md-6">
+                                <label for="postImage" class="form-label">Image</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="postImage" wire:model="image">
+                                @error('image')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label for="postTitle" class="form-label">Post Title</label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
                                     id="postTitle" placeholder="Enter post title" wire:model="title">
                                 @error('title')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="postTitle" class="form-label">Sub Title</label>
+                                <input type="text" class="form-control @error('subtitle') is-invalid @enderror"
+                                    id="postTitle" placeholder="Enter post sub-title" wire:model="subtitle">
+                                @error('subtitle')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -146,14 +164,6 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label for="postImage" class="form-label">Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                id="postImage" wire:model="image">
-                            @error('image')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
                         <button type="submit" class="btn btn-primary">Save Post</button>
                     </form>
                 </div>
@@ -174,10 +184,28 @@
                     <form wire:submit.prevent="updatePost">
                         <div class="row mb-3">
                             <div class="col-md-6">
+                                <label for="postImage" class="form-label">Image</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="postImage" wire:model="image">
+                                @error('image')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label for="postTitle" class="form-label">Post Title</label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
                                     id="postTitle" placeholder="Enter post title" wire:model="title">
                                 @error('title')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="postTitle" class="form-label">Sub Title</label>
+                                <input type="text" class="form-control @error('subtitle') is-invalid @enderror"
+                                    id="postTitle" placeholder="Enter post sub-title" wire:model="subtitle">
+                                @error('subtitle')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -252,14 +280,6 @@
                             <textarea class="form-control @error('content') is-invalid @enderror" id="postContent" rows="3"
                                 placeholder="Enter content" wire:model="content"></textarea>
                             @error('content')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="postImage" class="form-label">Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                id="postImage" wire:model="image">
-                            @error('image')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

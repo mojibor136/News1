@@ -13,7 +13,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "livewire/livewire": "^3.5"
+        "livewire/livewire": "^3.5",
+        "monolog/monolog": "3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -38,7 +39,11 @@
             "app/Helpers/Admin/User.php",
             "app/Helpers/Admin/Post.php",
             "app/Helpers/Admin/Visitor.php",
-            "app/Helpers/Admin/View-Post.php"
+            "app/Helpers/Admin/View-Post.php",
+            "app/Helpers/Web/BakingNews.php",
+            "app/Helpers/Web/News.php",
+            "app/Helpers/Web/Category.php",
+            "app/Helpers/Web/Post.php"
         ]
     },
     "autoload-dev": {

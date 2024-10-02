@@ -57,7 +57,7 @@ class District extends Component {
     }
 
     public function render() {
-        $districts = DistrictModels::paginate( 6 );
+        $districts = DistrictModels::paginate( 10 );
         return view( 'livewire.district', [ 'districts' => $districts ] );
     }
 }

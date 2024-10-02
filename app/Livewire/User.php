@@ -16,7 +16,7 @@ class User extends Component {
     }
 
     public function render() {
-        $users = UserModel::paginate( 6 );
+        $users = UserModel::paginate( 14 );
         return view( 'livewire.user', [ 'users' => $users ] );
     }
 }

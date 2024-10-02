@@ -25,8 +25,8 @@
                     @foreach ($posts as $post)
                         <tr>
                             <td>{{ $post->id }}</td>
-                            <td>{{ $post->title }}</td>
-                            <td>{{ $post->description }}</td>
+                            <td>{{ Str::limit($post->title, 20) }}</td>
+                            <td>{{ $post->category->name }}</td>
                             <td>{{ $post->role }}</td>
                             <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>

@@ -9,7 +9,9 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\SubDistrictController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BakingNewsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\Clint\ClintController;
 use App\Http\Controllers\Clint\ClintPostController;
 
@@ -72,6 +74,15 @@ Route::middleware(['admin'])->group(function () {
         Route::controller(PostController::class)->group(function(){
             Route::get('/all/post', 'Index')->name('all.post');
             Route::get('/pending/post' , 'PendingPost')->name('pending.post');
+        });
+
+        // BakingNews routes
+        Route::controller(BakingNewsController::class)->group(function(){
+            Route::get('/baking/news' , 'Index')->name('baking.news');
+        });
+
+        Route::controller(VideoController::class)->group(function(){
+            Route::get('/video' , 'Index')->name('video');
         });
     });
 });
