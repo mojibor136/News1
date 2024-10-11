@@ -8,14 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PostVisitor extends Model {
     use HasFactory;
 
-    protected $fillable = [ 'post_id', 'author_id' ];
+    protected $fillable = [ 'post_id', 'role' ];
 
     public function post() {
         return $this->belongsTo( Post::class, 'post_id' );
-    }
-
-    public function user() {
-        return $this->belongsTo( User::class, 'author_id' );
     }
 
 }

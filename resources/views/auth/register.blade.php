@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Website Login</title>
+    <title>Registration</title>
+    @include('icon.icon')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -30,22 +31,9 @@
             margin-bottom: 20px;
         }
 
-        .btn-google {
-            background-color: #db4437;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        .btn-google:hover {
-            background-color: #c33c2e;
-        }
-
         .login-footer {
             text-align: center;
             margin-top: 20px;
-        }
-
-        .login-footer {
             font-size: 14px;
         }
 
@@ -70,6 +58,13 @@
         .divider::after {
             margin-left: 10px;
         }
+
+        @media (max-width: 576px) {
+            .login-container {
+                margin: 50px 20px;
+                /* Adjust margin for smaller screens */
+            }
+        }
     </style>
 </head>
 
@@ -77,15 +72,8 @@
 
     <div class="login-container">
         <div class="login-header">
-            <h2>Register to News Portal</h2>
+            <h2>Register</h2>
         </div>
-
-        <button class="btn btn-google w-100">
-            <img src="{{ asset('logo/logo.png') }}" width="40" alt="Google Logo" style="margin-right: 8px;">
-            Continue with Google
-        </button>
-
-        <div class="divider">OR</div>
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -105,7 +93,7 @@
 
         <div class="login-footer">
             <a href="#">Forgot Password?</a><br>
-            <a href="{{ route('login') }}">Already created account</a>
+            <a href="{{ route('login') }}">Already have an account? Log In</a>
         </div>
     </div>
 

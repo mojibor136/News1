@@ -7,6 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <style>
+    body::-webkit-scrollbar {
+        display: block;
+    }
+
     .bg-green {
         background-color: #29725e;
         position: fixed;
@@ -22,12 +26,16 @@
     <div class="bg-green" id="searchBox">
         <div class="container">
             <div class="p-3">
-                <div class="d-flex">
-                    <input type="text" placeholder="খুঁজুন" class="border-0 rounded-1 rounded-end-0 form-control">
-                    <div class="icon">
-                        <button type="button" class="border-0 rounded-0 rounded-end-1 btn btn-primary">Search</button>
+                <form action="{{ route('search') }}" method="GET">
+                    <div class="d-flex">
+                        <input name="query" type="text" placeholder="খুঁজুন"
+                            class="border-0 rounded-1 rounded-end-0 form-control">
+                        <div class="icon">
+                            <button type="submit"
+                                class="border-0 rounded-0 rounded-end-1 btn btn-primary">Search</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

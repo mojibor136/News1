@@ -3,7 +3,7 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 
 function ViewPostCount() {
-    $user = Auth::user();
+    $userId = Auth::id();
 
-    return $user->posts()->count();
+    return Post::where( 'author_id', $userId )->count();
 }

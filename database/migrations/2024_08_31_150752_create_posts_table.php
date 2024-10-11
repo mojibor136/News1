@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('subtitle');
+            $table->string('imgTitle')->nullable();
+            $table->string('reporter')->nullable();
             $table->text('description');
             $table->Integer('category_id');
             $table->Integer('subcategory_id')->nullable();

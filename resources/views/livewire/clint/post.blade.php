@@ -17,10 +17,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Title</th>
                         <th>Category</th>
+                        <th>Author</th>
                         <th>Date</th>
-                        <th>Status</th>
                         <th>Visitor</th>
                         <th>Actions</th>
                     </tr>
@@ -29,16 +30,13 @@
                     @foreach ($posts as $post)
                         <tr>
                             <td>{{ $post->id }}</td>
-                            <td>{{ $post->title }}</td>
-                            <td>{{ $post->description }}</td>
-                            <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>
-                                @if ($post->status === 'pending')
-                                    <span style="color: red;">{{ $post->status }}</span>
-                                @elseif($post->status === 'approve')
-                                    <span style="color: green;">{{ $post->status }}</span>
-                                @endif
+                                <img width="45" src="{{ asset('storage/' . $post->image) }}" alt="">
                             </td>
+                            <td>{{ Str::limit($post->title, 20) }}</td>
+                            <td>{{ $post->category->name }}</td>
+                            <td>{{ $post->role }}</td>
+                            <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>{{ $post->visitors->count() }}</td>
                             <td>
                                 <button class="btn btn-sm btn-info" wire:click="editPost({{ $post->id }})"
@@ -72,10 +70,46 @@
                     <form wire:submit.prevent="CreatePost">
                         <div class="row mb-3">
                             <div class="col-md-6">
+                                <label for="postImage" class="form-label">Image</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="postImage" wire:model="image">
+                                @error('image')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label for="postTitle" class="form-label">Post Title</label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
                                     id="postTitle" placeholder="Enter post title" wire:model="title">
                                 @error('title')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="imgTitle" class="form-label">Image Title</label>
+                                <input type="text" class="form-control @error('imgTitle') is-invalid @enderror"
+                                    id="imgTitle" placeholder="Enter img title" wire:model="imgTitle">
+                                @error('imgTitle')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reporter" class="form-label">Reporter</label>
+                                <input type="text" class="form-control @error('reporter') is-invalid @enderror"
+                                    id="reporter" placeholder="Enter reporter name" wire:model="reporter">
+                                @error('reporter')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="postTitle" class="form-label">Sub Title</label>
+                                <input type="text" class="form-control @error('subtitle') is-invalid @enderror"
+                                    id="postTitle" placeholder="Enter post sub-title" wire:model="subtitle">
+                                @error('subtitle')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -109,8 +143,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="postDistrict" class="form-label">District</label>
-                                <select class="form-select @error('districtsId') is-invalid @enderror" id="postDistrict"
-                                    wire:model="districtsId">
+                                <select class="form-select @error('districtsId') is-invalid @enderror"
+                                    id="postDistrict" wire:model="districtsId">
                                     <option selected>Select district</option>
                                     @foreach ($districts as $district)
                                         <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -152,14 +186,6 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label for="postImage" class="form-label">Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                id="postImage" wire:model="image">
-                            @error('image')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
                         <button type="submit" class="btn btn-primary">Save Post</button>
                     </form>
                 </div>
@@ -178,14 +204,48 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="updatePost">
-                        <input type="hidden" wire:model="guard"
-                            value="{{ auth('admin')->check() ? 'admin' : 'web' }}">
                         <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="postImage" class="form-label">Image</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="postImage" wire:model="image">
+                                @error('image')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                             <div class="col-md-6">
                                 <label for="postTitle" class="form-label">Post Title</label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror"
                                     id="postTitle" placeholder="Enter post title" wire:model="title">
                                 @error('title')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="imgTitle" class="form-label">Image Title</label>
+                                <input type="text" class="form-control @error('imgTitle') is-invalid @enderror"
+                                    id="imgTitle" placeholder="Enter img title" wire:model="imgTitle">
+                                @error('imgTitle')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reporter" class="form-label">Reporter</label>
+                                <input type="text" class="form-control @error('reporter') is-invalid @enderror"
+                                    id="reporter" placeholder="Enter reporter name" wire:model="reporter">
+                                @error('reporter')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="postTitle" class="form-label">Sub Title</label>
+                                <input type="text" class="form-control @error('subtitle') is-invalid @enderror"
+                                    id="postTitle" placeholder="Enter post sub-title" wire:model="subtitle">
+                                @error('subtitle')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -260,14 +320,6 @@
                             <textarea class="form-control @error('content') is-invalid @enderror" id="postContent" rows="3"
                                 placeholder="Enter content" wire:model="content"></textarea>
                             @error('content')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="postImage" class="form-label">Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                id="postImage" wire:model="image">
-                            @error('image')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

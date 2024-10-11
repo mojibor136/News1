@@ -14,6 +14,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Title</th>
                         <th>Category</th>
                         <th>Author</th>
@@ -25,9 +26,12 @@
                     @foreach ($posts as $post)
                         <tr>
                             <td>{{ $post->id }}</td>
+                            <td>
+                                <img width="45" src="{{ asset('storage/' . $post->image) }}" alt="">
+                            </td>
                             <td>{{ Str::limit($post->title, 20) }}</td>
                             <td>{{ $post->category->name }}</td>
-                            <td>{{ $post->role }}</td>
+                            <td>{{ $post->author->name ?? 'Admin'}}</td>
                             <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-success"

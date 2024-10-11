@@ -28,6 +28,9 @@ class Post extends Component {
     public $districtsId;
     public $subdistrictsId;
     public $title;
+    public $subtitle;
+    public $imgTitle;
+    public $reporter;
     public $content;
     public $tag;
     public $image;
@@ -42,14 +45,12 @@ class Post extends Component {
 
     public function CreatePost() {
         $this->validate( [
+            'reporter' => 'required',
+            'subtitle' => 'required',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'required|image|max:2400',
             'categoryId' => 'required|exists:categories,id',
-            'subcategoryId' => 'required|exists:sub_categories,id',
-            'districtsId' => 'required|exists:districs,id',
-            'subdistrictsId' => 'required|exists:sub_districs,id',
-            'tag' => 'required|string'
         ] );
 
         if ( auth( 'admin' )->check() ) {
@@ -74,6 +75,9 @@ class Post extends Component {
         }
 
         $post = PostModel::create( [
+            'reporter' => $this->reporter,
+            'imgTitle' => $this->imgTitle,
+            'subtitle' => $this->subtitle,
             'title' => $this->title,
             'description' => $this->content,
             'category_id' => $this->categoryId,
@@ -91,6 +95,9 @@ class Post extends Component {
 
         session()->flash( 'message', 'Post created successfully!' );
         $this->reset(
+            'subtitle',
+            'reporter',
+            'imgTitle',
             'title',
             'content',
             'categoryId',
@@ -109,7 +116,10 @@ class Post extends Component {
 
     public function editPost( $id ) {
         $post = PostModel::find( $id );
+        $this->reporter = $post->reporter;
+        $this->imgTitle = $post->imgTitle;
         $this->editPostId = $post->id;
+        $this->subtitle = $post->subtitle;
         $this->title = $post->title;
         $this->categoryId = $post->category_id;
         $this->subcategoryId = $post->subcategory_id;
@@ -121,13 +131,14 @@ class Post extends Component {
 
     public function updatePost() {
         $this->validate( [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'categoryId' => 'required|exists:categories,id',
-            'subcategoryId' => 'required|exists:sub_categories,id',
-            'districtsId' => 'required|exists:districs,id',
-            'subdistrictsId' => 'required|exists:sub_districs,id',
-            'tag' => 'required|string'
+            'subtitle' => 'nullable',
+            'title' => 'nullable|string|max:255',
+            'content' => 'nullable|string',
+            'categoryId' => 'nullable|exists:categories,id',
+            'subcategoryId' => 'nullable|exists:sub_categories,id',
+            'districtsId' => 'nullable|exists:districs,id',
+            'subdistrictsId' => 'nullable|exists:sub_districs,id',
+            'tag' => 'nullable|string'
         ] );
 
         $post = PostModel::find( $this->editPostId );
@@ -145,6 +156,9 @@ class Post extends Component {
         }
 
         $post->update( [
+            'subtitle' => $this->subtitle,
+            'reporter' => $this->reporter,
+            'imgTitle' => $this->imgTitle,
             'title' => $this->title,
             'description' => $this->content,
             'category_id' => $this->categoryId,
@@ -158,6 +172,9 @@ class Post extends Component {
 
         session()->flash( 'message', 'Post updated successfully!' );
         $this->reset(
+            'subtitle',
+            'reporter',
+            'imgTitle',
             'title',
             'content',
             'categoryId',

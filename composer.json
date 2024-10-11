@@ -43,7 +43,13 @@
             "app/Helpers/Web/BakingNews.php",
             "app/Helpers/Web/News.php",
             "app/Helpers/Web/Category.php",
-            "app/Helpers/Web/Post.php"
+            "app/Helpers/Web/Post.php",
+            "app/Helpers/Web/District.php",
+            "app/Helpers/Web/SubDistrict.php",
+            "app/Helpers/Web/convertToBanglaNumber.php",
+            "app/Helpers/Web/Logo.php",
+            "app/Helpers/Web/ContactInfo.php",
+            "app/Helpers/Web/SocialLink.php"
         ]
     },
     "autoload-dev": {

@@ -1,3 +1,6 @@
+@php
+    $contactInfo = getContactInfo();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,32 +52,8 @@
         opacity: 0.8;
     }
 
-    .footer-icon a i {
-        font-size: 15px;
-    }
-
-    .footer-icon a:nth-child(1) {
-        background-color: #3b5998;
-    }
-
-    .footer-icon a:nth-child(2) {
-        background-color: #1DA1F2;
-    }
-
-    .footer-icon a:nth-child(3) {
-        background-color: #C13584;
-    }
-
-    .footer-icon a:nth-child(4) {
-        background-color: #0077B5;
-    }
-
-    .footer-icon a:nth-child(5) {
-        background-color: #FF0000;
-    }
-
     .footer-type {
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 600;
         color: #555;
     }
@@ -87,23 +66,28 @@
 </style>
 
 <body>
+    @php
+        $logo = getLogo();
+    @endphp
     <div class="footer-container mt-4">
         <div class="container">
             <div class="footer py-4 row">
                 <div
                     class="footer-logo col-12 col-md-4 col-mb-0 mb-4 d-flex align-items-center justify-content-center justify-content-md-start">
                     <div class="footer-img">
-                        <img src="{{ asset('logo/logo.webp') }}" alt="">
+                        @if ($logo)
+                            <img src="{{ asset('storage/' . $logo->path) }}" alt="">
+                        @endif
                     </div>
                 </div>
                 <div
                     class="footer-info col-12 col-md-4 col-mb-0 mb-4 d-flex align-items-center justify-content-center justify-content-md-start">
                     <div class="info align-items-center align-items-md-start">
-                        <p><strong>ভারপ্রাপ্ত সম্পাদক: </strong>রেজাউল করিম (রনি রেজা)
-                            ২৪ উত্তর কাফরুল (৫ম তলা), ঢাকা-১২০৬।
+                        <p style="font-size: 18px"><strong>ভারপ্রাপ্ত সম্পাদক: </strong>{{ $contactInfo->editorName }}
+                            {{ $contactInfo->address }}
                         </p>
-                        <p><strong>ফ্যাক্স: </strong>+৮৮-০২-৯৮৩৩৬০৯</p>
-                        <p><strong>ফোন: </strong>+৮৮-০২-৯৮৩৩৯৪২</p>
+                        <p style="font-size: 18px"><strong>ফ্যাক্স: </strong>{{ $contactInfo->fax }}</p>
+                        <p style="font-size: 18px"><strong>ফোন: </strong>{{ $contactInfo->phone }}</p>
                     </div>
                 </div>
                 <div
@@ -113,30 +97,57 @@
                             <span>সোশ্যাল মিডিয়াতে আমরা</span>
                         </div>
                         <div class="footer-icon d-flex gap-2">
-                            <a href="">
-                                <i class="ri-facebook-line"></i>
+                            <?php
+                            $socialLinks = getSocialLinks();
+                            foreach ($socialLinks as $socialLink) {
+                                $icon = '';
+                                $bgColor = '';
+                                
+                                switch ($socialLink->name) {
+                                    case 'Facebook':
+                                        $icon = 'ri-facebook-line';
+                                        $bgColor = '#3b5998';
+                                        break;
+                                    case 'YouTube':
+                                        $icon = 'ri-youtube-line';
+                                        $bgColor = '#ff0000';
+                                        break;
+                                    case 'Instagram':
+                                        $icon = 'ri-instagram-line';
+                                        $bgColor = '#e1306c';
+                                        break;
+                                    case 'TikTok':
+                                        $icon = 'ri-tiktok-fill';
+                                        $bgColor = '#69c9d0';
+                                        break;
+                                    case 'Snapchat':
+                                        $icon = 'ri-snapchat-line';
+                                        $bgColor = '#fffc00'; 
+                                        break;
+                                    case 'Whatsapp':
+                                        $icon = 'ri-whatsapp-line'; 
+                                        $bgColor = '#25D366';
+                                        break;
+                                    default:
+                                        $icon = 'ri-global-line';
+                                        break;
+                                }
+                            ?>
+                            <a href="{{ $socialLink->link }}" style="background-color: {{ $bgColor }};">
+                                <i class="{{ $icon }}" style="color: white;"></i>
                             </a>
-                            <a href="">
-                                <i class="ri-twitter-fill"></i>
-                            </a>
-                            <a href="">
-                                <i class="ri-instagram-line"></i>
-                            </a>
-                            <a href="">
-                                <i class="ri-linkedin-fill"></i>
-                            </a>
-                            <a href="">
-                                <i class="ri-youtube-line"></i>
-                            </a>
+                            <?php } ?>
                         </div>
+
+
                         <div class="d-flex flex-column align-items-center align-items-md-end gap-2">
                             <div class="mail">
                                 <i class="ri-mail-open-fill"></i>
-                                <a href="">editor@daily-bangladesh.com</a>
+                                <a href="">{{ $contactInfo->email }}</a>
                             </div>
                             <div class="mail">
                                 <i class="ri-mail-open-fill"></i>
-                                <a href="">newsroom@daily-bangladesh.com</a>
+                                <a href="">{{ $contactInfo->email }}</a>
                             </div>
                         </div>
                     </div>
@@ -145,7 +156,7 @@
 
         </div>
         <div class="footer-bottom">
-            <span>© ২০২৪ | ডেইলি বাংলাদেশ কর্তৃক সর্বসত্ব ® সংরক্ষিত | উন্নয়নে ইমিথমেকারস.কম</span>
+            <span style="font-size: 18px">© ২০২৪ | ডেইলি বাংলাদেশ কর্তৃক সর্বসত্ব ® সংরক্ষিত | উন্নয়নে ইমিথমেকারস.কম</span>
         </div>
     </div>
 </body>

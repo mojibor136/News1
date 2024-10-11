@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('post_visitors', function (Blueprint $table) {
             $table->id();
             $table->string('post_id');
-            $table->string('author_id');
+            $table->string('role');
             $table->timestamps();
         });
     }

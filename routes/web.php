@@ -12,6 +12,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BakingNewsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\CategoryPostController;
+use App\Http\Controllers\SubCategoryPostController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\LogoController;
+use App\Http\Controllers\ViewController;
+use App\Http\Controllers\SocialLinkController;
+use App\Http\Controllers\ContactInfoController;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Clint\ClintController;
 use App\Http\Controllers\Clint\ClintPostController;
 
@@ -41,6 +50,7 @@ Route::middleware(['admin'])->group(function () {
     // Admin dashboard
     Route::controller(AdminController::class)->group(function(){
         Route::get('/Admin', 'Index')->name('admin');
+        Route::post('/Admin/update' , 'AdminUpdate')->name('admin.update');
     });
 
     Route::prefix('Admin')->group(function () {
@@ -81,9 +91,30 @@ Route::middleware(['admin'])->group(function () {
             Route::get('/baking/news' , 'Index')->name('baking.news');
         });
 
+        // Video controller
+
         Route::controller(VideoController::class)->group(function(){
             Route::get('/video' , 'Index')->name('video');
         });
+
+        // Social Link
+
+        Route::controller(SocialLinkController::class)->group(function(){
+            Route::get('/social/link' , 'Index')->name('link');
+        });
+
+        // Contact Info 
+
+        Route::controller(ContactInfoController::class)->group(function(){
+            Route::get('/contact/info' , 'Index')->name('contact.info');
+        });
+
+        // Logo controller
+
+        Route::controller(LogoController::class)->group(function(){
+            Route::get('/logo/management' , 'Index')->name('logo.management');
+        });
+
     });
 });
 
@@ -97,6 +128,30 @@ Route::middleware('TrackVisitors')->group(function(){
      Route::get('/' , 'Home')->name('home');
    });
 
+});
+
+Route::controller(TagController::class)->group(function(){
+    Route::get('/tag/{id}/{name}' , 'Index')->name('tag.post');
+});
+
+Route::controller(ViewController::class)->group(function(){
+    Route::get('/view/{id}/{name}' , 'Index')->name('view.post');
+});
+
+Route::controller(CategoryPostController::class)->group(function(){
+    Route::get('/category/{id}/{name}' , 'Index')->name('category.post');
+});
+
+Route::controller(SubCategoryPostController::class)->group(function(){
+    Route::get('/subcategory/{id}/{name}' , 'Index')->name('subcategory.post');
+});
+
+Route::controller(ArchiveController::class)->group(function(){
+    Route::get('/archives' , 'Index')->name('archives');
+});
+
+Route::controller(SearchController::class)->group(function(){
+    Route::get('/search' , 'Index')->name('search');
 });
 
 Route::middleware(['auth'])->group(function () {

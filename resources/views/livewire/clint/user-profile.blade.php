@@ -12,6 +12,17 @@
             cursor: pointer;
         }
 
+
+        .link {
+            text-transform: capitalize;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            color: rgb(30, 82, 252);
+        }
+
         h5 {
             text-transform: capitalize;
         }
@@ -29,8 +40,9 @@
             <form wire:submit.prevent="UpdateProfile">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="adminProfileLabel">User Profile</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="adminProfileLabel">Account Settings</h5>
+                        <span class="link" data-bs-toggle="modal" data-bs-target="#passwordModal">change
+                            password</span>
                     </div>
                     <div class="modal-body">
                         @if (session()->has('message'))
@@ -41,13 +53,6 @@
                             </div>
                         @endif
                         <div class="profile-section">
-                            <div class="text-center mb-3">
-                                <img src="{{ asset('profile/profile.jpg') }}" class="rounded-circle mb-0"
-                                    alt="Admin Profile" width="150" height="150">
-                                <div class="d-flex justify-content-center align-items-center gap-1">
-                                    <h5 class="m-0">{{ $name }}</h5>
-                                </div>
-                            </div>
                             <div class="mb-3">
                                 <label for="adminName" class="form-label">Name</label>
                                 <input wire:model="name" type="text" class="form-control" id="adminName">
@@ -72,4 +77,5 @@
         </div>
     </div>
 </div>
+@livewire('clint.user-password-update', ['userId' => $id])
 </div>

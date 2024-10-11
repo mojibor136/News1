@@ -1,16 +1,3 @@
-function toggleButton(clickedButton, otherButtonId) {
-    // Add 'btn-danger' class to the clicked button
-    clickedButton.classList.add('btn-danger');
-    clickedButton.classList.remove('btn-light');
-
-    // Remove 'btn-danger' class from the other button
-    var otherButton = document.getElementById(otherButtonId);
-    otherButton.classList.remove('btn-danger');
-    otherButton.classList.add('btn-light');
-}
-
-
-
 function getBanglaDate() {
     // বর্তমান তারিখ নাও
     const today = new Date();

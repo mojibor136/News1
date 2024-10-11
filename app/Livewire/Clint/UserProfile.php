@@ -10,11 +10,13 @@ class UserProfile extends Component {
 
     public $name;
     public $email;
+    public $id;
 
     public function mount() {
         $user = Auth::user();
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->id = $user->id;
     }
 
     public function UpdateProfile() {

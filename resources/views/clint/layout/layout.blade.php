@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Clint Dashboard</title>
+    <title>@yield('title')</title>
+    @include('icon.icon')
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
@@ -146,13 +147,13 @@
 
         .logo {
             width: 100%;
-            height: 70px;
-            background: #495057;
+            height: 80px;
             color: #999;
             display: flex;
             align-items: center;
-            justify-content: center;
+            padding-left: 20px;
         }
+
 
         .sidebar a {
             color: #fff;
@@ -281,6 +282,9 @@
 </head>
 
 <body>
+    @php
+        $logo = getLogo();
+    @endphp
     <div class="main-container">
         <div class="header">
             <div class="search-content">
@@ -305,7 +309,12 @@
         <div class="sidebar">
             <div class="logo-content">
                 <div class="logo">
-                    150X70
+                    <a href="{{ route('dashboard') }}">
+                        @if ($logo)
+                            <img src="{{ asset('storage/' . $logo->path) }}" class="img-fluid" style="max-width:80%"
+                                alt="">
+                        @endif
+                    </a>
                 </div>
             </div>
             <ul class="nav flex-column">
@@ -338,6 +347,18 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
                                 data-bs-target="#languageModal">Permission</a>
+                        </li>
+                    </ul>
+                    <ul class="collapse" id="settingsMenu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
+                                data-bs-target="#passwordModal">Password</a>
+                        </li>
+                    </ul>
+                    <ul class="collapse" id="settingsMenu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
+                                data-bs-target="#admin-profile">Profile</a>
                         </li>
                     </ul>
                 </li>

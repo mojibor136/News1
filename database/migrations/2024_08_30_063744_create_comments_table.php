@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('content'); 
-            $table->integer('user_id'); 
+            $table->text('content');
+            $table->string('name'); 
             $table->integer('news_id');
             $table->timestamps();
         });

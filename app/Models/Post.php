@@ -10,6 +10,8 @@ class Post extends Model {
 
     protected $fillable = [
         'title',
+        'imgTitle',
+        'reporter',
         'subtitle',
         'description',
         'category_id',
@@ -22,6 +24,11 @@ class Post extends Model {
         'slug',
         'image',
     ];
+
+    public function author() {
+        return $this->belongsTo( User::class, 'author_id' );
+
+    }
 
     public function category() {
         return $this->belongsTo( Category::class );

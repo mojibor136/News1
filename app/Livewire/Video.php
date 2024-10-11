@@ -3,36 +3,71 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\Video as VideoModel;
 
 class Video extends Component {
-    use WithFileUploads;
 
-    public $title;
-    public $video;
+    public $videoId, $title, $video;
+
+    protected $rules = [
+        'title' => 'required|string|max:255',
+        'video' => 'required|url',
+    ];
 
     public function CreateVideo() {
-        $this->validate( [
-            'title' => 'required|string|max:255',
-            'video' => 'required|file|mimetypes:video/mp4,video/webm,video/x-msvideo,video/quicktime|max:102400',
+        $this->validate();
+
+        $videoId = '';
+        if ( preg_match( '/(?:\?v=|\/embed\/|\/v\/|youtu\.be\/|\/watch\?v=|\/watch\?.+&v=)([^&?\/\s]{11})/i', $this->video, $matches ) ) {
+            $videoId = $matches[ 1 ];
+        }
+
+        VideoModel::create( [
+            'title' => $this->title,
+            'video' => 'https://www.youtube.com/embed/' . $videoId,
         ] );
 
-        if ( $this->video ) {
-            $videoPath = $this->video->store( 'videos', 'public' );
+        $this->reset( [ 'title', 'video' ] );
 
-            VideoModel::create( [
-                'title' => $this->title,
-                'video' => $videoPath,
-            ] );
+        session()->flash( 'message', 'Video successfully saved.' );
+    }
 
-            session()->flash( 'message', 'Video uploaded successfully!' );
+    public function editVideo( $id ) {
+        $video = VideoModel::findOrFail( $id );
+        $this->videoId = $video->id;
+        $this->video = $video->video;
+        $this->title = $video->title;
+    }
 
-            $this->reset( [ 'title', 'video' ] );
+    public function UpdateVideo() {
+        $this->validate( [
+            'title' => 'required|string|max:255',
+            'video' => 'required|url',
+        ] );
+
+        $videoId = '';
+        if ( preg_match( '/(?:\?v=|\/embed\/|\/v\/|youtu\.be\/|\/watch\?v=|\/watch\?.+&v=)([^&?\/\s]{11})/i', $this->video, $matches ) ) {
+            $videoId = $matches[ 1 ];
         }
+
+        $video = VideoModel::findOrFail( $this->videoId );
+        $video->update( [
+            'title' => $this->title,
+            'video' => 'https://www.youtube.com/embed/' . $videoId,
+        ] );
+
+        $this->reset( [ 'title', 'video', 'videoId' ] );
+
+        session()->flash( 'message', 'Video updated successfully.' );
+    }
+
+    public function deleteVideo( $id ) {
+        VideoModel::findOrFail( $id )->delete();
+        session()->flash( 'message', 'Video successfully delete.' );
     }
 
     public function render() {
-        return view( 'livewire.video' );
+        $videos = VideoModel::all();
+        return view( 'livewire.video', [ 'videos' => $videos ] );
     }
 }

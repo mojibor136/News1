@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Admin Dashboard</title>
+    <title>@yield('title')</title>
+    @include('icon.icon')
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
@@ -106,7 +107,6 @@
         .admin-content .admin-img .img img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
         }
 
         .admin-content .admin-img .admin-info {
@@ -137,6 +137,7 @@
             height: 100%;
             border-radius: 8px;
             overflow: auto;
+            padding: 10px;
         }
 
         .main-content::-webkit-scrollbar {
@@ -163,12 +164,11 @@
 
         .logo {
             width: 100%;
-            height: 70px;
-            background: #495057;
+            height: 80px;
             color: #999;
             display: flex;
             align-items: center;
-            justify-content: center;
+            padding-left: 20px;
         }
 
         .sidebar a {
@@ -249,7 +249,7 @@
         }
 
         .over {
-            height: 450px;
+            height: 430px;
             overflow: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -260,6 +260,16 @@
 
         }
 
+        .link {
+            text-transform: capitalize;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            color: rgb(30, 82, 252);
+        }
+
         @media (max-width: 640px) {
 
             .main-container {
@@ -268,6 +278,10 @@
                 grid-template-areas:
                     "header"
                     "main";
+            }
+
+            .main-content {
+                padding: 2px;
             }
 
             .header {
@@ -311,6 +325,10 @@
 </head>
 
 <body>
+    @php
+        $logo = getLogo();
+        $admin = AdminInfo();
+    @endphp
     <div class="main-container">
         <div class="header">
             <div class="search-content">
@@ -328,18 +346,88 @@
                     <a href=""><i class="ri-notification-4-line"></i></a>
                 </div>
                 <div class="admin-img">
-                    <div class="img">
-                        <img src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
-                            alt="">
+                    <div class="admin-img">
+                        <!-- Trigger for #admin-profile modal -->
+                        <div class="img">
+                            <img src="{{ asset('storage/Admins/' . $admin->image) }}" alt="Admin Profile Image">
+                        </div>
+                        <div class="admin-info" data-bs-toggle="modal" data-bs-target="#admin-profile">
+                            <span>{{ $admin->name }}</span>
+                            <i class="ri-arrow-down-s-line"></i>
+                        </div>
+
+                        <!-- #admin-profile Modal Structure -->
+                        <div wire:ignore.self class="modal fade" id="admin-profile" tabindex="-1"
+                            aria-labelledby="adminProfileLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="adminProfileLabel">Account Settings</h5>
+                                        <span class="link" data-bs-toggle="modal"
+                                            data-bs-target="#passwordModal">change
+                                            password</span>
+                                    </div>
+                                    <form action="{{ route('admin.update') }}" method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="modal-body">
+                                            @if (session()->has('message'))
+                                                <div class="alert alert-success mt-3">
+                                                    {{ session('message') }}
+                                                </div>
+                                            @endif
+                                            <div class="profile-section">
+                                                <div class="mb-3">
+                                                    <label for="adminName" class="form-label">Company Name</label>
+                                                    <input type="text" value="{{ $admin->name }}"
+                                                        class="form-control" id="adminName" required name="name">
+                                                    @error('name')
+                                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="adminEmail" class="form-label">Email address</label>
+                                                    <input type="email" value="{{ $admin->email }}" name="email"
+                                                        class="form-control" id="adminEmail" required>
+                                                    @error('email')
+                                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="image" class="form-label">Icon</label>
+                                                    <input type="file" class="form-control" id="image"
+                                                        accept="image/*" name="image">
+                                                </div>
+                                                <div class="group">
+                                                    <input type="hidden" value="{{ $admin->id }}" name="adminId">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save Profile</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @livewire('admin-password-update', ['adminId' => $admin->id])
                     </div>
-                    @livewire('admin-profile')
+
                 </div>
             </div>
         </div>
         <div class="sidebar">
             <div class="logo-content">
                 <div class="logo">
-                    150X70
+                    <a href="{{ route('admin') }}">
+                        @if ($logo)
+                            <img src="{{ asset('storage/' . $logo->path) }}" class="img-fluid" style="max-width:80%"
+                                alt="">
+                        @endif
+                    </a>
                 </div>
             </div>
             <ul class="nav flex-column">
@@ -441,6 +529,33 @@
                             <li class="nav-item">
                                 <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
                                     data-bs-target="#permissionModal">Permission</a>
+                            </li>
+                        </ul>
+                        <ul class="collapse" id="settingsMenu">
+                            <li class="nav-item">
+                                <a href="{{ route('contact.info') }}" class="nav-link ps-4">Contact Info</a>
+                            </li>
+                        </ul>
+                        <ul class="collapse" id="settingsMenu">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
+                                    data-bs-target="#passwordModal">Password</a>
+                            </li>
+                        </ul>
+                        <ul class="collapse" id="settingsMenu">
+                            <li class="nav-item">
+                                <a href="{{ route('link') }}" class="nav-link ps-4">Social Link</a>
+                            </li>
+                        </ul>
+                        <ul class="collapse" id="settingsMenu">
+                            <li class="nav-item">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#admin-profile"
+                                    class="nav-link ps-4">Profile</a>
+                            </li>
+                        </ul>
+                        <ul class="collapse" id="settingsMenu">
+                            <li class="nav-item">
+                                <a href="{{ route('logo.management') }}" class="nav-link ps-4">Logo</a>
                             </li>
                         </ul>
                     </li>

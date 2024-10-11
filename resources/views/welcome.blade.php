@@ -1,3 +1,7 @@
+@php
+    $company = getCompany();
+    $post = PostTitle();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,460 +12,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-    <title>Daily Bangladesh</title>
+    @include('icon.icon')
+    @include('layout.scroll')
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <title>
+        {{ $company->name }} | {{ $post->title }}
+    </title>
+    <meta name="description" content="{{ $post->description }}">
+    <meta name="keywords" content="{{ $post->tags->pluck('tag')->implode(', ') }}">
+    <meta name="robots" content="index, follow">
 </head>
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Roboto', sans-serif;
-        padding-bottom: 36px;
-    }
-
-    a {
-        text-decoration: none;
-        color: transparent;
-    }
-
-    .social-icons .icon a {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        margin: 0 5px;
-        border-radius: 50%;
-        background-color: #f0f0f0;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-        color: #fff;
-    }
-
-    .social-icons .icon a:nth-child(1) {
-        background-color: #3b5998;
-    }
-
-    .social-icons .icon a:nth-child(2) {
-        background-color: #25d366;
-    }
-
-    .social-icons .icon a:nth-child(3) {
-        background-color: #ff0000;
-    }
-
-    .social-icons .icon a:nth-child(4) {
-        background-color: #1da1f2;
-    }
-
-    .social-icons .icon a:nth-child(5) {
-        background-color: #c32aa3;
-    }
-
-    .social-icons .icon a:hover {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .social-icons i {
-        font-size: 17px;
-    }
-
-    .lang-botton a {
+    body::-webkit-scrollbar {
         display: block;
-        padding: 4px 8px;
-        border-radius: 20px;
-        background: #be475d;
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-    }
-
-    .lang-botton a:nth-child(2) {
-        background: #29725e;
-        color: #fff;
-    }
-
-    .icon-container {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
-        color: white;
-        cursor: pointer;
-        font-weight: 700;
-    }
-
-    .ads-logo {
-        width: 100%;
-        height: 100%;
-    }
-
-    .sticky-top {
-        z-index: 200;
-    }
-
-    /* main content */
-    .news .title h3 {
-        font-size: 20px;
-        line-height: 30px;
-        padding: 5px 0;
-        padding-left: 2px !important;
-        padding-bottom: 0;
-        color: #222;
-        font-weight: 600;
-    }
-
-    .news .title .text span {
-        color: #555;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        display: -webkit-box;
-        font-size: 15px;
-        line-height: 23px;
-        margin-top: 5px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding-left: 2px !important;
-    }
-
-    .time {
-        display: flex;
-        font-size: 13px;
-        color: #666;
-        padding: 5px 0;
-        gap: 3px;
-    }
-
-    .post .title h4 {
-        font-size: 14px;
-        text-align: left;
-        font-weight: 600;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        display: -webkit-box;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #333;
-    }
-
-    .post .text span {
-        font-size: 14px;
-        color: #444;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        display: -webkit-box;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .post {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        overflow: hidden;
-        border: 1px solid #ddd;
-        border-bottom: none;
-    }
-
-    .post a.post-list:not(:last-child) {
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 5px;
-    }
-
-    .post a .post-list:last-child {
-        border-bottom: none;
-    }
-
-
-    a {
-        text-decoration: none;
-        color: transparent;
-    }
-
-    .post-list:hover h4 {
-        color: #007377;
-    }
-
-    .one-post:hover h3 {
-        color: #007377;
-    }
-
-    .hover-effect:hover .text-block span {
-        color: rgb(224, 79, 79);
-    }
-
-    #btn1,
-    #btn2 {
-        border-radius: 0;
-        border-bottom: 1px solid #ddd;
-    }
-
-    #border a {
-        border-bottom: 1px solid #ddd;
-    }
-
-    #border a:last-child {
-        border: none;
-    }
-
-    #border a:first-child {
-        padding-top: 0 !important;
-    }
-
-    #border a:hover .title span {
-        color: #007377;
-    }
-
-    #hover:hover .title span {
-        color: #007377;
-    }
-
-    /* Customize the select element */
-    .custom-select {
-        background: transparent;
-        border: 1px solid #ccc;
-        padding-right: 40px;
-        position: relative;
-    }
-
-    /* Position and style the arrow icon */
-    .dropdown-arrow {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        pointer-events: none;
-        font-size: 18px;
-        color: #333;
-    }
-
-    .grid-container {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
-
-    .border {
-        border: 1px solid #ccc;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tr td {
-        font-size: 15px;
-    }
-
-    .bottomM {
-        margin-bottom: 50px;
-    }
-
-    .topM {
-        margin-top: 50px;
-    }
-
-    .grid-card {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: 5px;
-    }
-
-    .border-lg-left {
-        border-left: 1px solid #ccc;
-    }
-
-    .border-lg-right {
-        border-right: 1px solid #ccc;
-    }
-
-    .pl-lg-1 {
-        padding-left: 5px;
-    }
-
-    .pl-lg-2 {
-        padding-left: 10px;
-    }
-
-    .pr-lg-0 {
-        padding-right: 0;
-    }
-
-    .custom-width-200 {
-        width: 200px;
-    }
-
-    @media (max-width: 768px) {
-        .grid-container {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .grid-card {
-            grid-template-columns: 1fr;
-        }
-
-        .grid-card a .d-flex {
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .border-md-right-0 {
-            border-right: 0 !important;
-        }
-
-        .border-md-left-0 {
-            border-left: 0 !important;
-        }
-
-        .grid-container {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .pl-md-0 {
-            padding-left: 0;
-        }
-
-        .pt-md-2px {
-            padding-top: 10px;
-        }
-
-        .pr-md-0 {
-            padding-right: 0;
-        }
-
-        .p-md-1px {
-            padding: 5px;
-        }
-
-        .custom-width-300 {
-            width: 300px;
-        }
-
-    }
-
-    @media (max-width: 768px) {
-        .custom-width-250 {
-            width: 250px;
-        }
     }
 </style>
 
 <body>
 
-    @php
-        $categories = getCategory();
-    @endphp
-
-    {{-- search container  --}}
     @include('layout.search')
-
-    {{-- top header --}}
-    <header class="bg-white text-black border-bottom d-none d-md-block">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center justify-content-center gap-2" style="color: #333; font-size:14px">
-                    <i class="ri-calendar-fill"></i>
-                    <span id="formattedDate"></span>
-                </div>
-                <div class="d-flex align-items-center gap-3 lang-botton">
-                    <a href="">English</a>
-                    <a href="">Converter</a>
-                </div>
-                <div class="d-flex justify-content-center  align-items-center social-icons">
-                    <div class="mx-3">
-                        <a href="" class="btn btn-secondary btn-sm">সাবস্ক্রাইব</a>
-                    </div>
-                    <div class="icon">
-                        <a href=""><i class="ri-facebook-fill"></i></a>
-                        <a href=""><i class="ri-whatsapp-fill"></i></a>
-                        <a href=""><i class="ri-youtube-fill"></i></a>
-                        <a href=""><i class="ri-twitter-x-line"></i></a>
-                        <a href=""><i class="ri-instagram-fill"></i></a>
-                    </div>
-                </div>
-                <div class="">
-                    <div id="searchBtn"
-                        class="d-flex align-items-center justify-content-center bg-secondary rounded-circle icon-container">
-                        <i class="ri-search-line"></i>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    {{-- logo and ads img --}}
-
-    <div class="container d-none d-md-block">
-        <div class="row py-2">
-            <div class="col-4 d-flex align-items-center">
-                <img src="{{ asset('logo/logo.webp') }}" class="img-fluid" style="max-width: 65%" alt="">
-            </div>
-            <div class="col-8 d-flex align-items-center">
-                <img class="ads-logo" src="{{ asset('logo/Beximco-LPG-28-01-2023.webp') }}" alt="">
-            </div>
-        </div>
-    </div>
-
-    @include('layout.navbar')
-
-    <header class="sticky-top">
-        <div style="background: #eee;">
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <div class="icon" style="cursor:pointer; color:#555; font-size:20px; font-weight:700">
-                        <i class="ri-menu-line"></i>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <img src="{{ asset('logo/logo.webp') }}" class="img-fluid" style="max-width:50%" alt="">
-                    </div>
-                    <div class="search" style=" cursor:pointer; font-size: 20px;color:#555;font-weight:600">
-                        <i id="searchBtn" class="ri-search-line"></i>
-                    </div>
-                </div>
-                <nav class="navbar navbar-expand p-0 overflow-hidden d-block d-md-none">
-                    <div class="navbar-nav gap-1 overflow-auto">
-                        @foreach ($categories as $category)
-                            <div class="nav-item dropdown">
-                                @if ($category->subcategories->isNotEmpty())
-                                    <!-- Dropdown for category with subcategories -->
-                                    <a class="nav-link dropdown-toggle text-dark" href="#"
-                                        id="navbarDropdownMobile{{ $category->id }}" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ $category->name }}
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMobile{{ $category->id }}">
-                                        @foreach ($category->subcategories as $subcategory)
-                                            <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ $subcategory->id }}">{{ $subcategory->name }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <!-- Direct link for category without subcategories -->
-                                    <a class="nav-link text-dark" href="{{ $category->id }}">
-                                        {{ $category->name }}
-                                    </a>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
-
+    @include('layout.header')
     {{-- main content  --}}
 
     <div class="container mt-1">
         <div class="row py-2 border-bottom border-md-0">
             <div class="col-lg-6 col-md-12 p-0 px-md-2 px-1">
                 @if ($posts['latest'])
-                    <a href="" class="one-post">
+                    <a href="{{ route('view.post', ['id' => $posts['latest']->id, 'name' => $posts['latest']->category->name]) }}"
+                        class="one-post">
                         <div class="news">
                             <div class="img">
                                 <img src="{{ asset('storage/' . $posts['latest']->image) }}" class="img-fluid"
@@ -470,7 +48,7 @@
                             <div class="title mt-2">
                                 <h3>{{ $posts['latest']->title }}</h3>
                                 <div class="text">
-                                    <span>{{ $posts['latest']->description }}</span>
+                                    <span>{{ $posts['latest']->subtitle }}</span>
                                 </div>
                                 @php
                                     $timeAgo = \Carbon\Carbon::parse($posts['latest']->created_at)->diffForHumans();
@@ -488,33 +66,14 @@
                 <div class="row">
                     @foreach ($posts['two'] as $post)
                         <div class="col-md-6 border-right">
-                            <a href="#">
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
                                 <div class="mt-1">
-                                    <h3
-                                        style="
-                                    font-size: 17px;
-                                    line-height: 27px;
-                                    padding: 5px 2px 0 2px;
-                                    color: #222;
-                                    font-weight: 600;
-                                    display: -webkit-box;
-                                    -webkit-line-clamp: 2;
-                                    -webkit-box-orient: vertical;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;">
-                                        {{ $posts['latest']->title }}
+                                    <h3 id="title-bold">
+                                        {{ $post->title }}
                                     </h3>
-                                    <div class="text">
-                                        <span
-                                            style="
-                                        display: -webkit-box;
-                                        -webkit-line-clamp: 5;
-                                        -webkit-box-orient: vertical;
-                                        overflow: hidden;
-                                        text-overflow: ellipsis;
-                                        color: #333;
-                                        font-size: 14px;">
-                                            {{ $posts['latest']->description }}
+                                    <div class="text" id="title-four">
+                                        <span>
+                                            {{ $post->subtitle }}
                                         </span>
                                     </div>
                                     @php
@@ -534,22 +93,23 @@
             <div class="col-lg-3 col-md-12 p-0 px-md-0 px-1">
                 <div class="py-2 px-1 px-md-2 post">
                     @foreach ($posts['four'] as $post)
-                        <a href="{{ $post->id }}" class="post-list">
+                        <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                            class="post-list">
                             <div class="post-content">
                                 <div style="display: flex; flex-direction:row; gap:5px;">
                                     <div class="img" style="width:90px; height:60px;">
                                         <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
                                             alt="">
                                     </div>
-                                    <div class="title" style="font-size: 18px;flex:1;">
-                                        <h4 class="m-0" style="line-height: inherit;">
+                                    <div class="title" style="flex:1;">
+                                        <h4 class="m-0">
                                             {{ $post->title }}
                                         </h4>
                                     </div>
                                 </div>
                                 <div class="text mt-1">
                                     <span>
-                                        {{ $post->description }}
+                                        {{ $post->subtitle }}
                                     </span>
                                     @php
                                         $timeAgo = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
@@ -566,37 +126,7 @@
             </div>
 
             <div class="col-lg-3 col-md-12 p-0 px-md-2 px-1 py-md-0 py-4">
-                <div class="border">
-                    <div class="btn-group w-100" role="group">
-                        <button type="button" class="btn btn-danger w-50" id="btn1"
-                            onclick="toggleButton(this, 'btn2')">সর্বশেষ</button>
-                        <button type="button" class="btn btn-light w-50" id="btn2"
-                            onclick="toggleButton(this, 'btn1')">সর্বাধিক</button>
-                    </div>
-                    <div style="height: 625px; overflow:auto;">
-
-                        @foreach ($posts['all'] as $post)
-                            <a href="#" class="hover-effect"
-                                style="border-bottom: 1px solid #ddd; display:block; background:#f3f3f3;">
-                                <div class="d-flex p-1">
-                                    <i class="ri-arrow-right-s-line" style="color: #333; font-size:24px;"></i>
-                                    <div class="text-block" style="color: #333; font-size:14px; padding-top:7px;">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
-                                </div>
-                                @php
-                                    $timeAgo = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
-                                @endphp
-                                <div class="time mx-2" style="padding-top:0">
-                                    <i class="ri-time-fill"></i>
-                                    <span>{{ $timeAgo }}</span>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                    <a href="" class="btn-sm btn btn-secondary w-100 rounded-0">সব
-                        খবর</a>
-                </div>
+                @livewire('post-filter')
             </div>
         </div>
     </div>
@@ -605,78 +135,41 @@
     <div class="container topM">
         <div class="video-gallery row px-1 px-md-3 py-4" style="background: #111">
             <div class="type pb-4 d-flex align-items-center gap-2"
-                style="font-size: 20px; font-weight:700; color:#ddd; padding-left:3px; line-height:normal;">
+                style="font-size: 24px; font-weight:700; color:#ddd; padding-left:3px; line-height:normal;">
                 <i class="ri-film-line"></i>
                 <span>ভিডিও গ্যালারি</span>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12 py-1 px-1">
                 <a href="" style="background: #333; display:block" id="hover">
-                    <video controls class="w-100">
-                        <source src="{{ asset('video/b.webM') }}" type="video/mp4">
-                    </video>
-                    <div class="title" style="padding: 2px 7px 7px 10px; color: #eee; font-size:22px;">
-                        <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা. মুস্তাফিজুর
-                            রহমান ইরান</span>
+                    <iframe class="w-100" src="{{ $videoOne->video }}" title="YouTube video player" frameborder="0"
+                        allowfullscreen></iframe>
+                    <div class="title" style="padding: 2px 7px 7px 10px; color: #eee; font-size:24px;">
+                        <span>{{ \Illuminate\Support\Str::limit($videoOne->title, 100) }}</span>
                     </div>
+                    @php
+                        use Carbon\Carbon;
+                        Carbon::setLocale('bn');
+                    @endphp
                     <div class="time mx-2" style="padding-top:0; font-size:14px; color:#a7a7a7; padding-bottom:10px;">
                         <i class="ri-time-fill"></i>
-                        <span>১ ঘণ্টা আগে</span>
+                        <span>{{ $videoOne->created_at->diffForHumans() }}</span>
                     </div>
                 </a>
             </div>
 
             <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="row">
-                    <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
-                            <video controls class="w-100">
-                                <source src="{{ asset('video/fg.webM') }}" type="video/mp4">
-                            </video>
-                            <div class="title" style="color: #eee; font-size:15px;">
-                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
-                                    মুস্তাফিজুর
-                                    রহমান ইরান</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
-                            <video controls class="w-100">
-                                <source src="{{ asset('video/dfg.webM') }}" type="video/mp4">
-                            </video>
-                            <div class="title" style="color: #eee; font-size:15px;">
-                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
-                                    মুস্তাফিজুর
-                                    রহমান ইরান</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
-                            <video controls class="w-100">
-                                <source src="{{ asset('video/g.webM') }}" type="video/mp4">
-                            </video>
-                            <div class="title" style="color: #eee; font-size:15px;">
-                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
-                                    মুস্তাফিজুর
-                                    রহমান ইরান</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 py-1 px-1">
-                        <a href="" class="p-2" style="background: #333; display:block" id="hover">
-                            <video controls class="w-100">
-                                <source src="{{ asset('video/k.webM') }}" type="video/mp4">
-                            </video>
-                            <div class="title" style="color: #eee; font-size:15px;">
-                                <span>শেখ হাসিনা সম্বন্ধে নতুন তথ্য দিলেন ডা.
-                                    মুস্তাফিজুর
-                                    রহমান ইরান</span>
-                            </div>
-                        </a>
-                    </div>
+                    @foreach ($videoFor as $video)
+                        <div class="col-6 py-1 px-1">
+                            <a href="" class="p-2" style="background: #333; display:block" id="hover">
+                                <iframe class="w-100" src="{{ $video->video }}" title="YouTube video player"
+                                    frameborder="0" allowfullscreen></iframe>
+                                <div class="title" style="color: #eee; font-size:18px;">
+                                    <span>{{ \Illuminate\Support\Str::limit($video->title, 70) }}</span>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -684,28 +177,23 @@
 
     <div class="container topM p-0">
         <div class="grid-card px-1 px-md-0">
-            <a href="" class="p-2" style=" height:max-content; display: block; border:1px solid #ccc;">
-                <div class="d-flex gap-1">
-                    <div class="text" style="flex:1;">
-                        <p class="m-0 mb-1" style="font-size: 15px; color:#007377;">এখন ট্রেন্ডিং /</p>
-                        <span
-                            style="
-                            color: #000;
-                            font-size: 15px;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            text-overflow: ellipsis;">
-                            পৃথিবীর আকাশে ‘দ্বিতীয় চাঁদ’ দেখা যাবে ২৯ সেপ্টেম্বর
-                        </span>
+            @foreach ($posts['four'] as $post)
+                <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}" class="p-2"
+                    style=" height:max-content; display: block; border:1px solid #ccc;">
+                    <div class="d-flex gap-1">
+                        <div class="text" style="flex:1;">
+                            <p class="m-0 mb-1" style="font-size: 20px; color:#007377;">এখন ট্রেন্ডিং /</p>
+                            <span id="title">
+                                {{ $post->title }}
+                            </span>
+                        </div>
+                        <div class="img" style="width:90px; height:60px;">
+                            <img src="{{ asset('storage/' . $post->image) }}" width="80" height="60"
+                                alt="">
+                        </div>
                     </div>
-                    <div class="img">
-                        <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" width="80" height="60"
-                            alt="">
-                    </div>
-                </div>
-            </a>
+                </a>
+            @endforeach
         </div>
     </div>
 
@@ -715,78 +203,20 @@
         <div class="row px-1 px-md-0">
             <div class="col-lg-9 col-md-12 p-0">
                 <div class="grid-container">
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
+                    @foreach ($posts['sixPosts'] as $post)
+                        <a style="color:#444"
+                            href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                            <div class="border p-2">
+                                <div class="img" style="width: 100%">
+                                    <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid"
+                                        alt="">
+                                </div>
+                                <div class="title py-1" style="font-size: 18px;font-weight:600">
+                                    <span>{{ Str::limit($post->title, 38) }}</span>
+                                </div>
                             </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <div class="border p-2">
-                            <div class="img" style="width: 100%">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title py-1"
-                                style="font-size: 16px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
+                    @endforeach
                 </div>
             </div>
             <div class="col-lg-3 col-md-12 pl-lg-2 pl-md-0 pt-md-2px pr-lg-0">
@@ -819,7 +249,7 @@
                         </tbody>
                     </table>
                     <div class="w-100" style=" text-align:center; background: #a52823; padding:7px;">
-                        <span id="current-date" style="color: #fff; font-size:14px;"></span>
+                        <span id="current-date" style="color: #fff; font-size:18px;"></span>
                     </div>
                 </div>
             </div>
@@ -832,85 +262,94 @@
         <div class="row">
             <div class="col-lg-6 col-md-12 p-0 px-1 px-md-2">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>জাতীয়</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneNationalPost']->category_id, 'name' => $posts['OneNationalPost']->category->name]) }}"
+                        id="hoverType"><span>জাতীয়</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100" alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
+                        @if ($posts['OneNationalPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneNationalPost']->id, 'name' => $posts['OneNationalPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneNationalPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1" id="title-bold">
+                                    <span>{{ $posts['OneNationalPost']->title }}</span>
+                                </div>
+                                <div class="text" id="title-four">
+                                    <span>
+                                        {{ $posts['OneNationalPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @else
+                        @endif
                     </div>
-                    <div class="col-lg-6 col-md-12" id="border">
-                        <a href="" class="d-block py-3 pt-0">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                        @foreach ($posts['NationalPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-6 col-md-12 p-0 px-1 px-md-2">
                 <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>রাজনীতি</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OnePoliticsPost']->category_id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
+                        id="hoverType"><span>রাজনীতি</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
+                        @if ($posts['OnePoliticsPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OnePoliticsPost']->id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OnePoliticsPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1" id="title-bold">
+                                    <span>{{ $posts['OnePoliticsPost']->title }}</span>
+                                </div>
+                                <div class="text" id="title-four">
+                                    <span>
+                                        {{ $posts['OnePoliticsPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @else
+                        @endif
                     </div>
-                    <div class="col-lg-6 col-md-12" id="border">
-                        <a href="" class="d-block py-3 pt-0">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                        @foreach ($posts['PoliticsPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
-
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -923,99 +362,70 @@
         <div class="row">
             <div class="col-12 px-md-2 px-1">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>সারাদেশ</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneCountryPost']->category_id, 'name' => $posts['OneCountryPost']->category->name]) }}"
+                        id="hoverType"><span>সারাদেশ</span></a>
                 </div>
             </div>
 
             <div class="col-12 px-md-2 px-1">
-                <div class="d-flex flex-column flex-md-row py-3 mt-4 gap-3 gap-md-0 mb-2"
-                    style="background: #ededed; align-items: center; justify-content: center;">
-                    <div class="d-flex mx-4">
-                        <div class="d-flex align-items-center gap-4">
-                            <div>
-                                <span style="color: #be475d;">আপনার এলাকার খবর</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column flex-md-row gap-4 gap-md-2">
-                        <div class="position-relative">
-                            <select
-                                class="form-select custom-select custom-width-200 custom-width-300 custom-width-250"
-                                id="postCategory">
-                                <option selected>বিভাগ</option>
-                            </select>
-                            <i class="ri-arrow-down-s-line dropdown-arrow"></i> <!-- Remixicon arrow -->
-                        </div>
-                        <div class="position-relative">
-                            <select
-                                class="form-select custom-select custom-width-200 custom-width-300 custom-width-250"
-                                id="postCategory">
-                                <option selected>জেলা</option>
-                                <option value="">lalmonirhat</option>
-                            </select>
-                            <i class="ri-arrow-down-s-line dropdown-arrow"></i> <!-- Remixicon arrow -->
-                        </div>
-                    </div>
-                    <div class="d-flex mx-4">
-                        <div class="d-flex align-items-center gap-4">
-                            <div>
-                                <button type="submit" id="button" name="btnSubmit" class="btn btn-success"
-                                    disabled="">খুঁজুন</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="col-12 mt-2">
                 <div class="row px-1 px-md-2">
                     <div class="col-lg-4 col-md-12 p-0">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100" alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-12 px-0 px-md-2" id="border">
-                        <a href="" class="d-block py-3">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                        @if ($posts['OneCountryPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneCountryPost']->id, 'name' => $posts['OneCountryPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneCountryPost']->image) }}"
+                                        class="w-100" alt="">
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                                <div class="title my-1" id="title-bold">
+                                    <span>{{ $posts['OneCountryPost']->title }}</span>
                                 </div>
-                            </div>
-                        </a>
+                                <div class="text" id="title-four">
+                                    <span>
+                                        {{ $posts['OneCountryPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @else
+                        @endif
                     </div>
+                    <div class="col-lg-4 col-md-12 px-0 px-md-2 py-4 py-md-0" id="border">
+                        @foreach ($posts['CountryPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+
                     <div class="col-lg-4 col-md-12 px-0 px-md-2 border-lg-left border-md-left-0" id="border">
-                        <a href="" class="d-block py-3">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                        @foreach ($posts['CountryPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style=" flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1028,84 +438,92 @@
         <div class="row">
             <div class="col-lg-6 col-md-12 p-0 px-1">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>আন্তর্জাতিক</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneInternationalPost']->category_id, 'name' => $posts['OneInternationalPost']->category->name]) }}"
+                        id="hoverType"><span>আন্তর্জাতিক</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100" alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
+                        @if ($posts['OneInternationalPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneInternationalPost']->id, 'name' => $posts['OneInternationalPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneInternationalPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1" id="title-bold">
+                                    <span>{{ $posts['OneInternationalPost']->title }}</span>
+                                </div>
+                                <div class="text" id="title-four">
+                                    <span>
+                                        {{ $posts['OneInternationalPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @endif
                     </div>
-                    <div class="col-lg-6 col-md-12" id="border">
-                        <a href="" class="d-block py-3">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                        @foreach ($posts['InternationalPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12 p-0 px-1">
                 <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>রাজধানী</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneCapitalPost']->category_id, 'name' => $posts['OneCapitalPost']->category->name]) }}"
+                        id="hoverType"><span>রাজধানী</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
+                        @if ($posts['OneCapitalPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneCapitalPost']->id, 'name' => $posts['OneCapitalPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneCapitalPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1" id="title-bold">
+                                    <span>{{ $posts['OneCapitalPost']->title }}</span>
+                                </div>
+                                <div class="text" id="title-four">
+                                    <span>
+                                        {{ $posts['OneCapitalPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @endif
                     </div>
-                    <div class="col-lg-6 col-md-12" id="border">
-                        <a href="" class="d-block py-3">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                        @foreach ($posts['CapitalPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title" id="title-tow">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
+
                     </div>
                 </div>
             </div>
@@ -1115,49 +533,57 @@
     {{-- বিনোদন news list --}}
     <div class="container topM px-1">
         <div class="type py-2"
-            style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+            style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
             <i class="ri-file-text-line"></i>
-            <span>বিনোদন</span>
+            <a href="{{ route('category.post', ['id' => $posts['EntertainmentPost']->first()->category_id, 'name' => $posts['EntertainmentPost']->first()->category->name]) }}"
+                id="hoverType"><span>বিনোদন</span></a>
         </div>
         <div class="row py-3">
             <div class="col-lg-4 col-md-12 border-lg-right border-md-right-0" id="border">
-                <a href="" class="d-block py-3">
-                    <div class="d-flex gap-2 align-items-center">
-                        <div class="img" style="width:90px; height:60px;">
-                            <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                alt="">
+                @foreach ($posts['EntertainmentPost'] as $post)
+                    <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                        class="d-block py-3">
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="img" style="width:90px; height:60px;">
+                                <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                    alt="">
+                            </div>
+                            <div class="title" id="title-tow">
+                                <span>{{ $post->title }}</span>
+                            </div>
                         </div>
-                        <div class="title"
-                            style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                            <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                        </div>
-                    </div>
-                </a>
-
+                    </a>
+                @endforeach
             </div>
             <div class="col-lg-4 col-md-12 border-lg-right border-md-right-0">
-                <a href="">
-                    <div class="img w-100">
-                        <img src="{{ asset('image/810100-198-1727425848.jpg') }}" class="w-100" alt="">
-                    </div>
-                    <div class="title py-2" style="font-size: 18px; color:#111; font-weight:600">
-                        <span>ওটিটিতে মনোযোগী জাহিদ হাসান</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-md-12" id="border">
-                <a href="" class="d-block py-3">
-                    <div class="d-flex gap-2 align-items-center">
-                        <div class="img" style="width:90px; height:60px;">
-                            <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
+                @if ($posts['OneEntertainmentPost'])
+                    <a
+                        href="{{ route('view.post', ['id' => $posts['OneEntertainmentPost']->id, 'name' => $posts['OneEntertainmentPost']->category->name]) }}">
+                        <div class="img w-100">
+                            <img src="{{ asset('storage/' . $posts['OneEntertainmentPost']->image) }}" class="w-100"
                                 alt="">
                         </div>
-                        <div class="title"
-                            style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                            <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
+                        <div class="title py-2" id="title-bold">
+                            <span>{{ $posts['OneEntertainmentPost']->title }}</span>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                @endif
+            </div>
+            <div class="col-lg-4 col-md-12 py-2 py-md-0" id="border">
+                @foreach ($posts['EntertainmentPost'] as $post)
+                    <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                        class="d-block py-3">
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="img" style="width:90px; height:60px;">
+                                <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                    alt="">
+                            </div>
+                            <div class="title" id="title-tow">
+                                <span>{{ $post->title }}</span>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
             </div>
         </div>
     </div>
@@ -1168,111 +594,115 @@
         <div class="row">
             <div class="col-lg-9 col-md-12 p-0 px-1">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>খেলা</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneSportsPost']->category_id, 'name' => $posts['OneSportsPost']->category->name]) }}"
+                        id="hoverType"><span>খেলা</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-lg-7 col-md-12" style="border-right: 1px solid #ccc;">
                         <div class="row">
                             <div class="col-12">
-                                <a href="" class="d-block" id="hover">
-                                    <div class="img">
-                                        <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100"
-                                            alt="">
-                                    </div>
-                                    <div class="title my-1"
-                                        style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                        <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                                    </div>
-                                    <div class="my-2" style="border-bottom: 1px solid #ccc"></div>
-                                </a>
+                                @if ($posts['OneSportsPost'])
+                                    <a href="{{ route('view.post', ['id' => $posts['OneSportsPost']->id, 'name' => $posts['OneSportsPost']->category->name]) }}"
+                                        class="d-block" id="hover">
+                                        <div class="img">
+                                            <img src="{{ asset('storage/' . $posts['OneSportsPost']->image) }}"
+                                                class="w-100" alt="">
+                                        </div>
+                                        <div class="title my-1"
+                                            style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                            <span>{{ $posts['OneSportsPost']->title }}</span>
+                                        </div>
+                                        <div class="my-2" style="border-bottom: 1px solid #ccc"></div>
+                                    </a>
+                                @endif
                             </div>
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="col-6">
-                                        <a href="" class="d-block" id="hover">
-                                            <div class="img">
-                                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100"
-                                                    alt="">
-                                            </div>
-                                            <div class="title my-1"
-                                                style="font-size: 15px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="" class="d-block" id="hover">
-                                            <div class="img">
-                                                <img src="{{ asset('image/1-1727101720.jpg') }}" class="w-100"
-                                                    alt="">
-                                            </div>
-                                            <div class="title my-1"
-                                                style="font-size: 15px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    @foreach ($posts['TowSportsPost'] as $post)
+                                        <div class="col-6">
+                                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                                class="d-block" id="hover">
+                                                <div class="img">
+                                                    <img src="{{ asset('storage/' . $post->image) }}" class="w-100"
+                                                        alt="">
+                                                </div>
+                                                <div class="title my-1"
+                                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                                    <span>{{ $post->title }}</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5 col-md-12" id="border" style="border-right: 1px solid #ccc">
-                        <a href="" class="d-block py-2">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                    <div class="col-lg-5 col-md-12 py-2 py-md-0" id="border" style="border-right: 1px solid #ccc">
+                        @foreach ($posts['SixSportsPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block py-2">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title"
+                                        style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 18px; line-height: 25px;">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-12 p-0 px-md-3 px-1">
                 <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>অর্থনীতি</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneEconomyPost']->category_id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
+                        id="hoverType"><span>অর্থনীতি</span></a>
                 </div>
                 <div class="row py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 14px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                        </a>
+                        @if ($posts['OneEconomyPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneEconomyPost']->id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneEconomyPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneEconomyPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 14px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneEconomyPost']->subtitle }}
+                                    </span>
+                                </div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12 mt-1" id="border">
-                        <a href="" class="d-block p-0 py-2">
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="img" style="width:90px; height:60px;">
-                                    <img class="w-100 h-100" src="{{ asset('image/jabi-db-1726806839.jpg') }}"
-                                        alt="">
+                        @foreach ($posts['ForEconomyPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block p-0 py-2">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="img" style="width:90px; height:60px;">
+                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                                            alt="">
+                                    </div>
+                                    <div class="title"
+                                        style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 18px; line-height: 25px;">
+                                        <span>{{ $post->title }}</span>
+                                    </div>
                                 </div>
-                                <div class="title"
-                                    style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 15px; line-height: 25px;">
-                                    <span>বাংলাদেশকে শুল্কমুক্ত বাজার দেবে চীন</span>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1285,166 +715,136 @@
         <div class="row">
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>আইন-আদালত</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneCourtPost']->category_id, 'name' => $posts['OneCourtPost']->category->name]) }}"
+                        id="hoverType"><span>আইন-আদালত</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/khulna-db-1727429217.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneCourtPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneCourtPost']->id, 'name' => $posts['OneCourtPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneCourtPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneCourtPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneCourtPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TCourtPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>মুখোমুখি</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneFacePost']->category_id, 'name' => $posts['OneFacePost']->category->name]) }}"
+                        id="hoverType"><span>মুখোমুখি</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneFacePost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneFacePost']->id, 'name' => $posts['OneFacePost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneFacePost']->image) }}" class="w-100"
+                                        alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneFacePost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneFacePost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TFacePost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>স্বাস্থ্য ও চিকিৎসা</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneHealthPost']->category_id, 'name' => $posts['OneHealthPost']->category->name]) }}"
+                        id="hoverType"><span>স্বাস্থ্য ও চিকিৎসা</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneHealthPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneHealthPost']->id, 'name' => $posts['OneHealthPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneHealthPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneHealthPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneHealthPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="row" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['THealthPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1455,55 +855,26 @@
 
     <div class="container topM px-1">
         <div class="type py-2"
-            style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+            style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
             <i class="ri-file-text-line"></i>
-            <span>লাইফস্টাইল</span>
+            <a href="{{ route('category.post', ['id' => $posts['LifestylePost']->first()->category_id, 'name' => $posts['LifestylePost']->first()->category->name]) }}"
+                id="hoverType"><span>লাইফস্টাইল</span></a>
         </div>
         <div class="row py-2">
-            <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc" id="border">
-                <a href="" class="b-block">
-                    <div class="img">
-                        <img src="{{ asset('image/810100-198-1727425848.jpg') }}" class="w-100" alt="">
-                    </div>
-                    <div class="title my-2"
-                        style="font-size: 17px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                        <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc" id="border">
-                <a href="" class="b-block">
-                    <div class="img">
-                        <img src="{{ asset('image/810100-198-1727425848.jpg') }}" class="w-100" alt="">
-                    </div>
-                    <div class="title my-2"
-                        style="font-size: 17px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                        <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc" id="border">
-                <a href="" class="b-block">
-                    <div class="img">
-                        <img src="{{ asset('image/810100-198-1727425848.jpg') }}" class="w-100" alt="">
-                    </div>
-                    <div class="title my-2"
-                        style="font-size: 17px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                        <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-12" id="border">
-                <a href="" class="b-block">
-                    <div class="img">
-                        <img src="{{ asset('image/810100-198-1727425848.jpg') }}" class="w-100" alt="">
-                    </div>
-                    <div class="title my-2"
-                        style="font-size: 17px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                        <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                    </div>
-                </a>
-            </div>
+            @foreach ($posts['LifestylePost'] as $post)
+                <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc" id="border">
+                    <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                        class="b-block">
+                        <div class="img">
+                            <img src="{{ asset('storage/' . $post->image) }}" class="w-100" alt="">
+                        </div>
+                        <div class="title my-2"
+                            style="font-size: 17px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                            <span>{{ $post->title }}</span>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -1513,164 +884,134 @@
                 <div class="type py-2"
                     style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>ধর্ম</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneReligionPost']->category_id, 'name' => $posts['OneReligionPost']->category->name]) }}"
+                        id="hoverType"><span>ধর্ম</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/khulna-db-1727429217.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneReligionPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneReligionPost']->id, 'name' => $posts['OneReligionPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneReligionPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneReligionPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneReligionPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TReligionPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>শিল্প-সাহিত্য</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneLiteraturePost']->category_id, 'name' => $posts['OneLiteraturePost']->category->name]) }}"
+                        id="hoverType"><span>শিল্প-সাহিত্য</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneLiteraturePost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneLiteraturePost']->id, 'name' => $posts['OneLiteraturePost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneLiteraturePost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneLiteraturePost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneLiteraturePost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TLiteraturePost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>প্রবাস জীবন</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneExpatriatePost']->category_id, 'name' => $posts['OneExpatriatePost']->category->name]) }}"
+                        id="hoverType"><span>প্রবাস জীবন</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneExpatriatePost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneExpatriatePost']->id, 'name' => $posts['OneExpatriatePost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneExpatriatePost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneExpatriatePost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneExpatriatePost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TExpatriatePost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1684,166 +1025,136 @@
         <div class="row">
             <div class="col-lg-4" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>শিক্ষাঙ্গন</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneSchoolPost']->category_id, 'name' => $posts['OneSchoolPost']->category->name]) }}"
+                        id="hoverType"><span>শিক্ষাঙ্গন</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/khulna-db-1727429217.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneSchoolPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneSchoolPost']->id, 'name' => $posts['OneSchoolPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneSchoolPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneSchoolPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneSchoolPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TSchoolPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>মজার খবর</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneFunPost']->category_id, 'name' => $posts['OneFunPost']->category->name]) }}"
+                        id="hoverType"><span>মজার খবর</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneFunPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneFunPost']->id, 'name' => $posts['OneFunPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneFunPost']->image) }}" class="w-100"
+                                        alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneFunPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneFunPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TFunPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>সাতরং</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneSevenPost']->category_id, 'name' => $posts['OneSevenPost']->category->name]) }}"
+                        id="hoverType"><span>সাতরং</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneSevenPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneSevenPost']->id, 'name' => $posts['OneSevenPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneSevenPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneSevenPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneSevenPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TSevenPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -1856,166 +1167,136 @@
         <div class="row">
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>ফিচার</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneJobPost']->category_id, 'name' => $posts['OneJobPost']->category->name]) }}"
+                        id="hoverType"><span>জব কর্নার</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/khulna-db-1727429217.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneJobPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneJobPost']->id, 'name' => $posts['OneJobPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneJobPost']->image) }}" class="w-100"
+                                        alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneJobPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneJobPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2 py-3 py-sm-0">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2 py-3 py-sm-0">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2 py-3 py-sm-0">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TJobPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>জব কর্নার</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneFeaturePost']->category_id, 'name' => $posts['OneFeaturePost']->category->name]) }}"
+                        id="hoverType"><span>ফিচার</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneFeaturePost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneFeaturePost']->id, 'name' => $posts['OneFeaturePost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneFeaturePost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneFeaturePost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneFeaturePost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TFeaturePost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
                 <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
+                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
                     <i class="ri-file-text-line"></i>
-                    <span>তথ্যপ্রযুক্তি</span>
+                    <a href="{{ route('category.post', ['id' => $posts['OneTechnologyPost']->category_id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
+                        id="hoverType"><span>তথ্যপ্রযুক্তি</span></a>
                 </div>
                 <div class="row p-0 py-3">
                     <div class="col-12">
-                        <a href="" class="d-block" id="hover">
-                            <div class="img">
-                                <img src="{{ asset('image/gm-kader-db-1727100683.jpg') }}" class="w-100"
-                                    alt="">
-                            </div>
-                            <div class="title my-1"
-                                style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                            <div class="text mb-1"
-                                style="font-size: 15px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>
-                                    ‘বাংলাদেশি অনুপ্রবেশকারীদের উল্টো করে ঝোলানো হবে’ ভারতের কেন্দ্রীয় স্বরাষ্ট্রমন্ত্রী
-                                    অমিত শাহর এ বক্তব্যের কড়া প্রতিবাদ ক‌রে‌ছে বাংলা‌দেশ।
-                                </span>
-                            </div>
-                            <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                        </a>
+                        @if ($posts['OneTechnologyPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneTechnologyPost']->id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
+                                class="d-block" id="hover">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneTechnologyPost']->image) }}"
+                                        class="w-100" alt="">
+                                </div>
+                                <div class="title my-1"
+                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $posts['OneTechnologyPost']->title }}</span>
+                                </div>
+                                <div class="text mb-1"
+                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>
+                                        {{ $posts['OneTechnologyPost']->subtitle }}
+                                    </span>
+                                </div>
+                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                            </a>
+                        @endif
                     </div>
                     <div class="col-12" id="border">
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
-                        <a href="" class="d-block d-flex align-items-start gap-2">
-                            <div class="mt-2"
-                                style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                            <div class="title my-1" id="border"
-                                style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                <span>লেবাননে ইসরায়েলের ভয়াবহ বিমান হামলা, নিহত</span>
-                            </div>
-                        </a>
+                        @foreach ($posts['TTechnologyPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="d-block d-flex align-items-start gap-2">
+                                <div class="mt-2"
+                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
+                                <div class="title my-1" id="border"
+                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
