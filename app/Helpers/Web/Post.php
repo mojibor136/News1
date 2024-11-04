@@ -4,6 +4,8 @@ use App\Models\Category;
 
 function getPostGroups() {
 
+    $latest = Post::where( 'status', 'approve' )->where( 'lead', 'yes' )->latest()->get();
+
     $allPosts = Post::where( 'status', 'approve' )->latest()->get();
 
     $countryId = Category::where( 'name', 'সারাদেশ' )->value( 'id' );
@@ -55,7 +57,7 @@ function getPostGroups() {
     $SportsPost = $allPosts->where( 'category_id', $SportsCategoryId );
     $OneSportsPost = $SportsPost->take( 1 )->first();
     $TowSportsPost = $SportsPost->take( 2 );
-    $SixSportsPost = $SportsPost->take( 6 );
+    $EightSportsPost = $SportsPost->take( 8 );
 
     $EconomyPost = $allPosts->where( 'category_id', $EconomyCategoryId );
     $OneEconomyPost = $EconomyPost->take( 1 )->first();
@@ -113,7 +115,7 @@ function getPostGroups() {
     $TTechnologyPost = $TechnologyPost->take( 3 );
 
     return [
-        'latest' => $allPosts->first(),
+        'latest' => $latest->first(),
         'two' => $allPosts->slice( 1, 2 ),
         'four' => $allPosts->slice( 3, 4 ),
         'sixPosts' => $allPosts->slice( 4, 6 ),
@@ -132,7 +134,7 @@ function getPostGroups() {
         'OneEntertainmentPost' => $OneEntertainmentPost,
         'OneSportsPost' => $OneSportsPost,
         'TowSportsPost' => $TowSportsPost,
-        'SixSportsPost' => $SixSportsPost,
+        'EightSportsPost' => $EightSportsPost,
         'ForEconomyPost' => $ForEconomyPost,
         'OneEconomyPost' => $OneEconomyPost,
         'OneCourtPost' => $OneCourtPost,

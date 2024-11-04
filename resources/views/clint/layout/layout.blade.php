@@ -143,6 +143,7 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 8px;
+            background: #fff;
         }
 
         .logo {
@@ -215,6 +216,7 @@
 
         .table>:not(caption)>*>* {
             vertical-align: middle;
+            font-size: 14px;
         }
 
         th {
@@ -299,8 +301,7 @@
             <div class="admin-content">
                 <div class="admin-img">
                     <div class="img">
-                        <img src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
-                            alt="">
+                        <img src="{{ asset('profile/4715330.png') }}" alt="">
                     </div>
                     @livewire('clint.user-profile')
                 </div>
@@ -343,12 +344,6 @@
                         <span><i class="ri-settings-line"></i> Settings</span>
                         <i class="ri-arrow-down-s-line"></i>
                     </a>
-                    <ul class="collapse" id="settingsMenu">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link ps-4" data-bs-toggle="modal"
-                                data-bs-target="#languageModal">Permission</a>
-                        </li>
-                    </ul>
                     <ul class="collapse" id="settingsMenu">
                         <li class="nav-item">
                             <a href="#" class="nav-link ps-4" data-bs-toggle="modal"

@@ -11,6 +11,7 @@
             }
         }
     </style>
+
     @if (session()->has('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
@@ -26,8 +27,18 @@
     <h2 class="mb-3">Editor Contact Information</h2>
 
     <form wire:submit.prevent="submit">
+
         <div class="mb-3">
-            <label for="editorName" class="form-label">Editor Name</label>
+            <label for="editorName" class="form-label">Logo</label>
+            <input type="file" wire:model="logo" class="form-control" id="logo"
+                {{ $isEditing ? '' : 'required' }}>
+            @error('logo')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="editorName" class="form-label">Editor</label>
             <input type="text" wire:model="editorName" class="form-control" id="editorName" required>
         </div>
 
@@ -62,7 +73,17 @@
             @foreach ($contactInfos as $info)
                 <div class="card m-2">
                     <div class="card-body">
-                        <p class="card-text"><strong>Editor Name:</strong> {{ $info->editorName }}</p>
+                        <div style="display: flex; align-items: center; gap:5px;" class="py-4">
+                            <strong>Logo:</strong>
+                            <div style="width: 200px">
+                                @if ($info->logo)
+                                    <img src="{{ asset('storage/' . $info->logo) }}" alt="Logo" class="img-fluid">
+                                @else
+                                    <span>No logo</span>
+                                @endif
+                            </div>
+                        </div>
+                        <p class="card-text"><strong>Editor:</strong> <span style="font-weight: 600">{{ $info->editorName }}</span></p>
                         <p class="card-text"><strong>Address:</strong> {{ $info->address }}</p>
                         <p class="card-text"><strong>Fax:</strong> {{ $info->fax }}</p>
                         <p class="card-text"><strong>Phone:</strong> {{ $info->phone }}</p>

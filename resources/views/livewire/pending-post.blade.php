@@ -17,6 +17,7 @@
                         <th>Image</th>
                         <th>Title</th>
                         <th>Category</th>
+                        <th>Role</th>
                         <th>Author</th>
                         <th>Date</th>
                         <th>Actions</th>
@@ -31,15 +32,18 @@
                             </td>
                             <td>{{ Str::limit($post->title, 20) }}</td>
                             <td>{{ $post->category->name }}</td>
-                            <td>{{ $post->author->name ?? 'Admin'}}</td>
+                            <td>{{ $post->role }}</td>
+                            <td>{{ $post->author_name }}</td>
                             <td>{{ $post->created_at->format('Y-m-d') }}</td>
                             <td>
+                                <a href="{{ route('admin.view.post', $post->id) }}" class="btn btn-secondary btn-sm">
+                                    <i class="ri-eye-line"></i>
+                                </a>
                                 <button type="button" class="btn btn-sm btn-success"
                                     wire:click="approvePost({{ $post->id }})">
                                     Approve
                                 </button>
-                                <button class="btn btn-sm btn-info" wire:click="editPost({{ $post->id }})"
-                                    data-bs-toggle="modal" data-bs-target="#editPostModal">Edit</button>
+                                <a href="{{ route('edit.post', $post->id) }}" class="btn btn-sm btn-info">Edit</a>
                                 <button class="btn btn-sm btn-danger"
                                     wire:click="deletePost({{ $post->id }})">Delete</button>
                             </td>
@@ -51,6 +55,42 @@
 
         <div class="mt-3">
             {{ $posts->links() }}
+        </div>
+    </div>
+
+
+    {{-- viewPostModal --}}
+
+    <!-- Modal -->
+    <div wire:ignore.self class="modal fade" id="viewPostModal" tabindex="-1" aria-labelledby="viewPostModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            @if ($viewPost)
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewPostModalLabel">{{ $viewPost->title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img id="postImage" src="{{ asset('storage/' . $viewPost->image) }}"
+                                    class="img-fluid mb-3" alt="Post Image" />
+                            </div>
+                            <div class="col-md-12">
+                                <h4 style="line-height:2.2; font-size:20px;" id="postTitle">{{ $viewPost->subtitle }}
+                                </h4>
+                                <p style="white-space: pre-wrap;line-height:2.2; font-size:16px;color:#333">
+                                    <br> {{ $viewPost->description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -105,8 +145,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="postDistrict" class="form-label">District</label>
-                                <select class="form-select @error('districtsId') is-invalid @enderror" id="postDistrict"
-                                    wire:model="districtsId">
+                                <select class="form-select @error('districtsId') is-invalid @enderror"
+                                    id="postDistrict" wire:model="districtsId">
                                     <option selected>Select district</option>
                                     @foreach ($districts as $district)
                                         <option value="{{ $district->id }}">{{ $district->name }}</option>

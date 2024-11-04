@@ -6,112 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     @include('icon.icon')
     @include('layout.scroll')
     <title>খুঁজুন</title>
 </head>
-<style>
-    .type-border {
-        display: flex;
-        justify-content: center;
-        border-top: 2px solid #29725e;
-        position: relative;
-    }
 
-    .type-card {
-        min-width: 150px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #29725e;
-        font-weight: 600;
-        position: absolute;
-        transform: skewX(-10deg);
-        color: #eee;
-        font-size: 18px;
-        top: -20px;
-    }
-
-    #title-bold-one {
-        color: #111;
-        font-size: 18px;
-        font-weight: 600;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .col-12:hover #title-bold-one,
-    .col-9 a:hover #title-bold-one {
-        color: #29725e;
-    }
-
-    #text-theree {
-        color: #333;
-        font-size: 18px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        line-height: 1.7;
-        text-overflow: ellipsis;
-    }
-
-    #time-text {
-        font-size: 15px;
-        color: #555;
-    }
-
-    @media (max-width: 768px) {
-        #text-theree {
-            -webkit-line-clamp: 2;
-        }
-
-        #title-bold-one {
-            font-size: 20px;
-            font-weight: 500;
-        }
-    }
-</style>
-
-<body>
+<body class="bg-gray-100 font-roboto">
     @include('layout.search')
     @include('layout.header')
-    <div class="container topM">
-        <div class="type-border">
-            <div class="type-card">
+
+    <div class="container mx-auto my-12">
+        <div class="flex justify-center border-t-2 border-[#29725e] relative">
+            <div
+                class="min-w-[150px] h-[40px] flex justify-center items-center bg-[#29725e] text-white font-semibold text-lg absolute transform skew-x-[-10deg] top-[-20px]">
                 <span>খুঁজুন</span>
             </div>
         </div>
     </div>
 
-    <div class="container topM">
-        <div class="row">
+    <div class="container mx-auto mt-4 px-2 md:px-4">
+        <div class="grid grid-cols-12 gap-4">
             @foreach ($posts as $post)
-                <div class="col-12 col-md-9 py-2">
+                <div class="col-span-12 md:col-span-9 py-2">
                     <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                        style="display: block; background:#f5f5f5">
-                        <div class="row">
-                            <div class="col-5">
-                                <img class="img-fluid" src="{{ asset('storage/' . $post->image) }}" alt="">
+                        class="block bg-[#f5f5f5] p-4 rounded-lg shadow-md hover:bg-[#e0e0e0] transition duration-200">
+                        <div class="grid grid-cols-12">
+                            <div class="col-span-5">
+                                <img class="img-fluid w-full h-auto rounded"
+                                    src="{{ asset('storage/' . $post->image) }}" alt="">
                             </div>
-                            <div class="col-7 py-2" style="padding-left: 0">
-                                <div class="title" id="title-bold-one">
+                            <div class="col-span-7 px-2">
+                                <div
+                                    class="text-gray-800 font-semibold text-xl overflow-hidden whitespace-nowrap text-ellipsis">
                                     <span>{{ $post->title }}</span>
                                 </div>
-                                <div class="text" id="text-theree">
-                                    <span>
-                                        {{ $post->subtitle }}
-                                    </span>
+                                <div class="text-gray-700 text-lg overflow-hidden line-clamp-2 md:line-clamp-3">
+                                    <span>{{ $post->subtitle }}</span>
                                 </div>
-                                <div class="time" id="time-text">
-                                    <span>শুক্রবার, ৪ অক্টোবর ২০২৪, ১৭:০৮</span>
+                                <div class="text-gray-600 text-base">
+                                    {{ \Carbon\Carbon::parse($post->created_at)->locale('bn')->isoFormat('dddd, D MMMM YYYY, HH:mm') }}
                                 </div>
                             </div>
                         </div>

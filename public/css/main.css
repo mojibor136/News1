@@ -4,25 +4,27 @@
     box-sizing: border-box;
 }
 
-@font-face {
-    font-family: 'SolaimanLipi';
-    src: url('{{ asset(' front/SolaimanLipi.ttf') }}') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+/*@font-face {*/
+/*    font-family: 'SolaimanLipi';*/
+/*    src: url('{{ asset(' front/SolaimanLipi.ttf') }}') format('truetype');*/
+/*    font-weight: normal;*/
+/*    font-style: normal;*/
+/*}*/
 
 body {
     padding-bottom: 36px;
-    font-family: 'SolaimanLipi', sans-serif;
-    overflow-x: hidden;
-    width: 100vw;
+    /*font-family: 'SolaimanLipi', sans-serif !important;*/
+    /*font-family: "Noto Serif Bengali", serif;*/
     margin: 0;
     padding: 0;
+    font-family: "Noto Serif Bengali", serif;
+    font-optical-sizing: auto;
+    font-weight: 0;
+    font-style: normal;
+    font-variation-settings:
+    "wdth" 100;
 }
 
-body::-webkit-scrollbar {
-    display: none;
-}
 
 a {
     text-decoration: none;

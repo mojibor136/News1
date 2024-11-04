@@ -14,6 +14,7 @@ class ViewController extends Controller {
         PostVisitor::create( [
             'post_id' => $viewPost->id,
             'role' => $viewPost->role,
+            'author_id' => $viewPost->author_id,
         ] );
 
         $relatedPosts = Post::where( 'category_id', $viewPost->category_id )

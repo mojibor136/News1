@@ -33,6 +33,8 @@ class PendingPost extends Component {
     public $image;
     public $editPostId;
 
+    public static $viewPost;
+
     public function mount() {
         $this->districts = Distric::all();
         $this->subdistricts = SubDistric::all();
@@ -114,8 +116,16 @@ class PendingPost extends Component {
         );
     }
 
+    public function viewPost( $id ) {
+        self::$viewPost = PostModel::where( 'id', $id )->first();
+    }
+
     public function render() {
         $posts = PostModel::where( 'status', 'pending' )->paginate( 10 );
-        return view( 'livewire.pending-post', [ 'posts' => $posts ] );
+
+        return view( 'livewire.pending-post', [
+            'posts' => $posts,
+            'viewPost' => self::$viewPost, 
+        ] );
     }
 }

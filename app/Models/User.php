@@ -17,10 +17,12 @@ class User extends Authenticatable {
     * @var array<int, string>
     */
     protected $fillable = [
+        'image',
         'name',
         'email',
         'password',
         'role',
+        'status',
     ];
 
     /**
@@ -42,8 +44,4 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function posts() {
-        return $this->hasMany( Post::class, 'author_id' );
-    }
 }

@@ -15,6 +15,15 @@ class User extends Component {
         session()->flash( 'message', 'User deleted successfully.' );
     }
 
+    public function toggleStatus( $id ) {
+        $user = UserModel::find( $id );
+
+        if ( $user ) {
+            $user->status = $user->status === 'active' ? 'deactive' : 'active';
+            $user->save();
+        }
+    }
+
     public function render() {
         $users = UserModel::paginate( 14 );
         return view( 'livewire.user', [ 'users' => $users ] );

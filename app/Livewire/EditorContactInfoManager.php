@@ -3,17 +3,22 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ContactInfo;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class EditorContactInfoManager extends Component {
+    use WithFileUploads;
+
     public $editorName;
     public $address;
     public $fax;
     public $phone;
     public $email;
+    public $logo;
     public $contactInfos = [];
     public $editingId = null;
     public $isEditing = false;
-    public $editId; // To store the ID of the record being edited
+    public $editId;
 
     protected $rules = [
         'editorName' => 'required',
@@ -21,6 +26,7 @@ class EditorContactInfoManager extends Component {
         'fax' => 'required',
         'phone' => 'required',
         'email' => 'required|email',
+        'logo' => 'nullable|image|max:1024',  // Ensure the file is an image and has a size limit
     ];
 
     public function mount() {
@@ -28,66 +34,85 @@ class EditorContactInfoManager extends Component {
     }
 
     public function submit() {
-        // Apply validation based on editing state
         $this->validate();
 
-        // Check if email already exists when creating a new record
-        if (!$this->isEditing) {
-            $existingContact = ContactInfo::where('email', $this->email)->first();
-            if ($existingContact) {
-                // If record exists, return an error
-                session()->flash('error', 'Contact information with this email already exists.');
-                return; // Exit the method early
-            }
-        }
-
-        if ($this->isEditing) {
+        if ( $this->isEditing ) {
             // Update existing contact info
-            $info = ContactInfo::find($this->editId);
-            $info->update([
+            $info = ContactInfo::find( $this->editId );
+
+            // Handle logo upload if a new logo is provided
+            if ( $this->logo ) {
+                // Delete the old logo if exists
+                if ( $info->logo ) {
+                    Storage::delete( $info->logo );
+                }
+                // Store the new logo
+                $logoPath = $this->logo->store( 'logos', 'public' );
+            } else {
+                $logoPath = $info->logo;
+                // Keep the existing logo
+            }
+
+            $info->update( [
                 'editorName' => $this->editorName,
                 'address' => $this->address,
                 'fax' => $this->fax,
                 'phone' => $this->phone,
                 'email' => $this->email,
-            ]);
-            session()->flash('message', 'Contact information updated successfully!');
+                'logo' => $logoPath,
+            ] );
+
+            session()->flash( 'message', 'Contact information updated successfully!' );
         } else {
             // Create new contact info
-            ContactInfo::create([
+            $logoPath = $this->logo ? $this->logo->store( 'logos', 'public' ) : null;
+
+            ContactInfo::create( [
                 'editorName' => $this->editorName,
                 'address' => $this->address,
                 'fax' => $this->fax,
                 'phone' => $this->phone,
                 'email' => $this->email,
-            ]);
-            session()->flash('message', 'Contact information added successfully!');
+                'logo' => $logoPath,
+            ] );
+
+            session()->flash( 'message', 'Contact information added successfully!' );
         }
 
         $this->resetFields();
-        $this->contactInfos = ContactInfo::all(); // Refresh the list
-        $this->isEditing = false; // Reset editing state
+        $this->contactInfos = ContactInfo::all();
+        $this->isEditing = false;
     }
 
-    public function edit($id) {
-        $info = ContactInfo::find($id);
+    public function edit( $id ) {
+        $info = ContactInfo::find( $id );
         $this->editorName = $info->editorName;
         $this->address = $info->address;
         $this->fax = $info->fax;
         $this->phone = $info->phone;
         $this->email = $info->email;
-        $this->editId = $id; // Store the ID of the info being edited
-        $this->isEditing = true; // Set editing state to true
+        $this->logo = null;
+        // Do not populate the logo field with the file path
+        $this->editId = $id;
+        $this->isEditing = true;
     }
 
-    public function delete($id) {
-        ContactInfo::destroy($id);
-        session()->flash('message', 'Contact information deleted successfully!');
+    public function delete( $id ) {
+        $info = ContactInfo::find( $id );
+
+        // Delete the logo file if it exists
+        if ( $info->logo ) {
+            Storage::delete( $info->logo );
+        }
+
+        $info->delete();
+
+        session()->flash( 'message', 'Contact information deleted successfully!' );
         $this->contactInfos = ContactInfo::all();
     }
 
     public function render() {
-        return view('livewire.editor-contact-info-manager');
+        return view( 'livewire.editor-contact-info-manager' );
     }
 
     private function resetFields() {
@@ -96,7 +121,8 @@ class EditorContactInfoManager extends Component {
         $this->fax = '';
         $this->phone = '';
         $this->email = '';
-        $this->isEditing = false; // Reset editing state
-        $this->editId = null; // Reset edit ID
+        $this->logo = '';
+        $this->isEditing = false;
+        $this->editId = null;
     }
 }

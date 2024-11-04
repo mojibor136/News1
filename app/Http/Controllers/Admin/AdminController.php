@@ -11,7 +11,8 @@ use Livewire\Pagination;
 
 class AdminController extends Controller {
     public function Index() {
-        $posts = Post::paginate( 5 );
+        $perPage = 10;
+        $posts = Post::latest()->where( 'status', 'approve' )->paginate( $perPage );
         return view( 'admin.dashboard', compact( 'posts' ) );
     }
 

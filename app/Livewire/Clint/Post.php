@@ -53,16 +53,10 @@ class Post extends Component {
             'categoryId' => 'required|exists:categories,id',
         ] );
 
-        if ( auth( 'admin' )->check() ) {
-            $authorId = auth( 'admin' )->id();
-            $role = auth( 'admin' )->user()->role;
-        } elseif ( auth( 'web' )->check() ) {
-            $authorId = auth( 'web' )->id();
-            $role = auth( 'web' )->user()->role;
-        } else {
-            $authorId = null;
-            $role = null;
-        }
+        $role = 'user';
+        $clintUser = Auth::guard( 'web' )->user();
+        $authorName = $clintUser->name;
+        $authorId = $clintUser->id;
 
         $imageName = $this->image->store( 'uploads', 'public' );
 
@@ -84,6 +78,7 @@ class Post extends Component {
             'subcategory_id' => $this->subcategoryId,
             'district_id' => $this->districtsId,
             'subdistrict_id' => $this->subdistrictsId,
+            'author_name' => $authorName,
             'author_id' => $authorId,
             'role' => $role,
             'status' => 'pending',

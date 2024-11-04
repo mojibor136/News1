@@ -1,53 +1,54 @@
-<div class="container topM" id="none-pdf">
+<div class="container mx-auto my-8 px-2 md:px-4" id="none-pdf">
     @livewireStyles
-    <div class="row">
-        <div class="col-12 col-md-7">
+    <div class="flex flex-col md:flex-row">
+        <div class="w-full md:w-7/12">
             <div class="py-4">
-                <span style="font-size: 15px; color:#333; font-weight:500">{{ $comments->count() }} comments</span>
+                <span class="text-gray-800 font-medium text-lg">{{ $comments->count() }} comments</span>
             </div>
-            <div class="border-bottom border-top py-4 d-flex flex-column">
+            <div class="border-t border-b py-4 flex flex-col">
                 @if (session()->has('message'))
-                    <div class="alert alert-success">
+                    <div class="alert alert-success mb-2 text-green-600">
                         {{ session('message') }}
                     </div>
                 @endif
 
                 <form wire:submit.prevent="Comment">
-                    @error('name')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                    <input wire:model="name" type="text" class="form-control mb-2" placeholder="Name"
-                        style="width: 100%">
+                    <div class="flex flex-col gap-2">
+                        @error('name')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
+                        <input wire:model="name" type="text" class="form-control mb-2 border rounded p-2"
+                            placeholder="Name">
 
-                    <textarea wire:model="comment" class="form-control" placeholder="Add a comment" style="width: 100%" rows="4"></textarea>
-                    @error('comment')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                        <textarea wire:model="comment" class="form-control border rounded p-2" placeholder="Add a comment" rows="4"></textarea>
+                        @error('comment')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-                    <div class="d-flex justify-content-end">
-                        <button class="my-2 btn btn-primary" style="width: fit-content;">Post</button>
+                    <div class="flex justify-end">
+                        <button class="my-2 bg-blue-600 text-white rounded px-4 py-2">Post</button>
                     </div>
                 </form>
-
             </div>
 
             <div class="list-content">
                 @foreach ($comments as $comment)
-                    <div class="list d-flex gap-3 py-3">
-                        <div class="list-item">
-                            <div class="img" style="width: 50px; height:50px;">
-                                <img src="{{ asset('profile/user.jpg') }}" alt="" class="rounded img-fluid">
+                    <div class="list flex gap-3 py-3">
+                        <div class="">
+                            <div class="w-12 h-12">
+                                <img src="{{ asset('profile/user.jpg') }}" alt=""
+                                    class="rounded-full w-full h-full object-cover">
                             </div>
                         </div>
-                        <div class="list-item" style="line-height:initial">
+                        <div class="" style="line-height:initial">
                             <div class="name">
-                                <p class="m-0 text-capitalize" style="color:rgb(33, 87, 158);font-size:15px;">
-                                    {{ $comment->name }}</p>
-                                <span style="color:#333; font-size:14px;" class="mt-1">{{ $comment->content }}</span>
+                                <p class="m-0 text-blue-800 text-base capitalize">{{ $comment->name }}</p>
+                                <span class="text-gray-800 text-base mt-1">{{ $comment->content }}</span>
                             </div>
-                            <div class="mt-1 d-flex gap-2" style="font-size: 13px;">
-                                <span style="color:rgb(33, 87, 158); cursor: pointer;">Link</span>
-                                <span style="color:rgb(33, 87, 158); cursor: pointer;">Reply</span>
+                            <div class="mt-1 flex gap-2 text-sm text-gray-600">
+                                <span class="text-blue-800 cursor-pointer">Link</span>
+                                <span class="text-blue-800 cursor-pointer">Reply</span>
                                 <span>{{ $comment->created_at->diffForHumans() }}</span>
                             </div>
                         </div>
@@ -55,12 +56,11 @@
                 @endforeach
             </div>
 
-            <a href="" class="mt-2" style="display: block; color:#333">
-                <i style="color: rgb(0, 105, 175)" class="ri-facebook-box-line"></i>
-                <span style="font-size: 12px; font-weight:200">Facebook Comments plugin</span>
+            <a href="#" class="mt-2 flex items-center text-gray-900">
+                <span class="text-sm font-light ml-2">Facebook Comments plugin</span>
             </a>
         </div>
-        <div class="col-5"></div>
+        <div class="hidden md:block md:w-5/12"></div>
     </div>
     @livewireScripts
 </div>

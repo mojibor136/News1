@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Logo;
 use App\Models\AdsLogo;
+use App\Models\NavLogo;
 use Livewire\WithFileUploads;
 
 class LogoManage extends Component {
@@ -12,16 +13,16 @@ class LogoManage extends Component {
     use WithFileUploads;
 
     public $logo;
+    public $navLogo;
     public $adsLogo;
     public $currentLogo;
     public $currentAdsLogo;
+    public $currentNavLogo;
 
     public function mount() {
-        $logo = Logo::first();
-        $adsLogo = AdsLogo::first();
-
-        $this->currentLogo = $logo ? $logo : null;
-        $this->currentAdsLogo = $adsLogo ? $adsLogo : null;
+        $this->currentLogo = Logo::first();
+        $this->currentNavLogo = NavLogo::first();
+        $this->currentAdsLogo = AdsLogo::first();
     }
 
     public function submitLogo() {
@@ -37,7 +38,6 @@ class LogoManage extends Component {
             }
 
             $this->currentLogo = Logo::first();
-
             $this->logo = null;
         }
     }
@@ -47,6 +47,31 @@ class LogoManage extends Component {
         $logo->delete();
 
         $this->currentLogo = Logo::first();
+    }
+
+    public function submitNavLogo() {
+
+        if ( $this->navLogo ) {
+            $path = $this->navLogo->store( 'logos' );
+
+            $existingNavLogo = NavLogo::first();
+
+            if ( $existingNavLogo ) {
+                $existingNavLogo->update( [ 'logo' => $path ] );
+            } else {
+                NavLogo::create( [ 'logo' => $path ] );
+            }
+
+            $this->currentNavLogo = NavLogo::first();
+            $this->navLogo = null;
+        }
+    }
+
+    public function deleteNavLogo( $id ) {
+        $navLogo = NavLogo::findOrFail( $id );
+        $navLogo->delete();
+
+        $this->currentNavLogo = NavLogo::first();
     }
 
     public function submitAdsLogo() {
@@ -62,14 +87,13 @@ class LogoManage extends Component {
             }
 
             $this->currentAdsLogo = AdsLogo::first();
-
             $this->adsLogo = null;
         }
     }
 
     public function deleteAdsLogo( $id ) {
-        $logo = AdsLogo::findOrFail( $id );
-        $logo->delete();
+        $adsLogo = AdsLogo::findOrFail( $id );
+        $adsLogo->delete();
 
         $this->currentAdsLogo = AdsLogo::first();
     }
@@ -77,7 +101,8 @@ class LogoManage extends Component {
     public function render() {
         return view( 'livewire.logo-manage', [
             'currentLogo' => $this->currentLogo,
-            'currentAdsLogo' => $this->currentAdsLogo
+            'currentAdsLogo' => $this->currentAdsLogo,
+            'currentNavLogo' => $this->currentNavLogo,
         ] );
     }
 }

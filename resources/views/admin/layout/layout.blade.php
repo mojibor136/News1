@@ -420,7 +420,7 @@
             </div>
         </div>
         <div class="sidebar">
-            <div class="logo-content">
+            <div class="logo-content" style="background: #fff;">
                 <div class="logo">
                     <a href="{{ route('admin') }}">
                         @if ($logo)
@@ -476,10 +476,10 @@
                         </a>
                         <ul class="collapse" id="postMenu">
                             <li class="nav-item">
-                                <a href="{{ route('all.post') }}" class="nav-link ps-4">Posts</a>
+                                <a href="{{ route('all.post') }}" wire:navigate class="nav-link ps-4">Posts</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('pending.post') }}" class="nav-link ps-4">Pending</a>
+                                <a href="{{ route('pending.post') }}" wire:navigate class="nav-link ps-4">Pending</a>
                             </li>
                         </ul>
                     </li>
@@ -491,7 +491,8 @@
                         </a>
                         <ul class="collapse" id="news">
                             <li class="nav-item">
-                                <a href="{{ route('baking.news') }}" class="nav-link ps-4">Baking news</a>
+                                <a href="{{ route('baking.news') }}" wire:navigate class="nav-link ps-4">Baking
+                                    news</a>
                             </li>
                         </ul>
                     </li>
@@ -508,16 +509,22 @@
                         </ul>
                     </li>
                     <li class="nav-item mb-2">
-                        <a href="#userMenu" class="nav-link d-flex justify-content-between align-items-center"
-                            data-bs-toggle="collapse">
-                            <span><i class="ri-group-line"></i> Users</span>
-                            <i class="ri-arrow-down-s-line"></i>
+                        <a href="{{ route('reporter.list') }}" class="nav-link d-flex align-items-center">
+                            <i class="ri-booklet-fill"></i>
+                            <span class="ms-1">Reporter</span>
                         </a>
-                        <ul class="collapse" id="userMenu">
-                            <li class="nav-item">
-                                <a href="{{ route('all.user') }}" class="nav-link ps-4">All Users</a>
-                            </li>
-                        </ul>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="{{ route('all.user') }}"
+                            class="nav-link d-flex justify-content-between align-items-center">
+                            <span><i class="ri-group-line"></i> Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="{{ route('ads') }}"
+                            class="nav-link d-flex justify-content-between align-items-center">
+                            <span><i class="ri-advertisement-line"></i> Adsense</span>
+                        </a>
                     </li>
                     <li class="nav-item mb-2">
                         <a href="#settingsMenu" class="nav-link d-flex justify-content-between align-items-center"

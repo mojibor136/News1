@@ -34,6 +34,7 @@
         },
         "files": [
             "app/Helpers/Clint/Profile.php",
+            "app/Helpers/Clint/ViewPost.php",
             "app/Helpers/Clint/Clint-Post.php",
             "app/Helpers/Admin/Profile.php",
             "app/Helpers/Admin/User.php",
@@ -49,7 +50,9 @@
             "app/Helpers/Web/convertToBanglaNumber.php",
             "app/Helpers/Web/Logo.php",
             "app/Helpers/Web/ContactInfo.php",
-            "app/Helpers/Web/SocialLink.php"
+            "app/Helpers/Web/SocialLink.php",
+            "app/Helpers/Web/Ads.php",
+            "app/Helpers/Reporter/ViewPost.php"
         ]
     },
     "autoload-dev": {

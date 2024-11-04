@@ -27,13 +27,22 @@
             text-transform: capitalize;
         }
     </style>
-    <!-- Trigger for #admin-profile modal -->
     <div class="admin-info" data-bs-toggle="modal" data-bs-target="#admin-profile">
-        <span>{{ $name }}</span>
+        @php
+            $nameParts = explode(' ', $name);
+
+            if (count($nameParts) > 2) {
+                $middleName = $nameParts[1];
+            } else {
+                $middleName = '';
+            }
+        @endphp
+
+        <span>User: {{ $middleName }}</span>
+
         <i class="ri-arrow-down-s-line"></i>
     </div>
 
-    <!-- #admin-profile Modal Structure -->
     <div wire:ignore.self class="modal fade" id="admin-profile" tabindex="-1" aria-labelledby="adminProfileLabel"
         aria-hidden="true">
         <div class="modal-dialog">

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('post_visitors', function (Blueprint $table) {
             $table->id();
+            $table->integer('author_id')->nullable();
             $table->string('post_id');
             $table->string('role');
             $table->timestamps();

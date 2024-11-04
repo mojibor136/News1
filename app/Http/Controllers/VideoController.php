@@ -10,4 +10,9 @@ class VideoController extends Controller {
     public function Index() {
         return view( 'admin.video' );
     }
+
+    public function Video() {
+        $videos = Video::all();
+        return view( 'video', compact( 'videos' ) );
+    }
 }

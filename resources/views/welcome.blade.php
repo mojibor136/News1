@@ -1,6 +1,7 @@
 @php
     $company = getCompany();
     $post = PostTitle();
+    $ads = getAds()->shuffle()->first();
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -10,8 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DrNngHbe.css') }}">
     @include('icon.icon')
     @include('layout.scroll')
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
@@ -22,102 +23,110 @@
     <meta name="keywords" content="{{ $post->tags->pluck('tag')->implode(', ') }}">
     <meta name="robots" content="index, follow">
 </head>
-<style>
-    body::-webkit-scrollbar {
-        display: block;
-    }
-</style>
 
 <body>
-
     @include('layout.search')
     @include('layout.header')
-    {{-- main content  --}}
 
-    <div class="container mt-1">
-        <div class="row py-2 border-bottom border-md-0">
-            <div class="col-lg-6 col-md-12 p-0 px-md-2 px-1">
+    <div class="container mx-auto mt-3 md:mt-6 px-2 md:px-4">
+        <div class="grid grid-cols-12">
+
+            <div class="col-span-12 md:col-span-6 pr-0 md:pr-2 border-b">
                 @if ($posts['latest'])
-                    <a href="{{ route('view.post', ['id' => $posts['latest']->id, 'name' => $posts['latest']->category->name]) }}"
-                        class="one-post">
-                        <div class="news">
-                            <div class="img">
-                                <img src="{{ asset('storage/' . $posts['latest']->image) }}" class="img-fluid"
-                                    alt="">
-                            </div>
-                            <div class="title mt-2">
-                                <h3>{{ $posts['latest']->title }}</h3>
-                                <div class="text">
-                                    <span>{{ $posts['latest']->subtitle }}</span>
-                                </div>
+                    <a
+                        href="{{ route('view.post', ['id' => $posts['latest']->id, 'name' => $posts['latest']->category->name]) }}">
+                        <div class="w-full">
+                            <img class="rounded-sm" src="{{ asset('storage/' . $posts['latest']->image) }}"
+                                alt="">
+                        </div>
+                        <div class="flex flex-col gap-2 py-2">
+                            <span
+                                class="text-[26px] text-gray-950 font-bold line-clamp-2">{{ $posts['latest']->title }}</span>
+                            <div class="flex flex-col gap-1">
+                                <span
+                                    class="text-base text-gray-700 font-medium line-clamp-3">{{ $posts['latest']->subtitle }}</span>
                                 @php
-                                    $timeAgo = \Carbon\Carbon::parse($posts['latest']->created_at)->diffForHumans();
+                                    \Carbon\Carbon::setLocale('bn');
+                                    $timeAgo = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
+
+                                    // Convert English numbers to Bangla numbers
+                                    $timeAgo = str_replace(
+                                        ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                                        ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'],
+                                        $timeAgo,
+                                    );
                                 @endphp
-                                <div class="time px-1">
-                                    <i class="ri-time-fill"></i>
-                                    <span>{{ $timeAgo }}</span>
-                                </div>
+                                <span class="text-base text-gray-700 font-medium">{{ $timeAgo }}</span>
                             </div>
-                            <div class="border"></div>
                         </div>
                     </a>
                 @endif
-
-                <div class="row">
+                <div class="grid grid-cols-12 py-4 gap-4">
                     @foreach ($posts['two'] as $post)
-                        <div class="col-md-6 border-right">
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
-                                <div class="mt-1">
-                                    <h3 id="title-bold">
-                                        {{ $post->title }}
-                                    </h3>
-                                    <div class="text" id="title-four">
-                                        <span>
-                                            {{ $post->subtitle }}
-                                        </span>
-                                    </div>
+                        <div class="col-span-12 md:col-span-6">
+                            <a href="">
+                                <span
+                                    class="text-[20px] text-gray-950 font-semibold line-clamp-2">{{ $post->title }}</span>
+                                <div class="flex flex-col gap-1">
+                                    <span
+                                        class="text-base text-gray-700 font-medium line-clamp-3 my-1">{{ $post->subtitle }}</span>
                                     @php
+                                        \Carbon\Carbon::setLocale('bn');
                                         $timeAgo = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
+
+                                        // Convert English numbers to Bangla numbers
+                                        $timeAgo = str_replace(
+                                            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                                            ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'],
+                                            $timeAgo,
+                                        );
                                     @endphp
-                                    <div class="time">
-                                        <i class="ri-time-fill"></i>
-                                        <span>{{ $timeAgo }}</span>
-                                    </div>
+                                    <span class="text-base text-gray-700 font-medium">{{ $timeAgo }}</span>
                                 </div>
                             </a>
                         </div>
                     @endforeach
+                    <div class="col-span-12 my-4">
+                        @if ($ads)
+                            <a href="{{ $ads->link }}">
+                                <img class="w-[-webkit-fill-availables]" src="{{ $ads->image }}" alt="">
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-12 p-0 px-md-0 px-1">
-                <div class="py-2 px-1 px-md-2 post">
-                    @foreach ($posts['four'] as $post)
-                        <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                            class="post-list">
-                            <div class="post-content">
-                                <div style="display: flex; flex-direction:row; gap:5px;">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+            <div class="col-span-12 md:col-span-3 px-0 md:px-2 border-0 md:border">
+                <div>
+                    @foreach ($posts['four'] as $index => $post)
+                        <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                            <div class="py-2 {{ $loop->last ? '' : 'border-b' }}">
+                                <div class="grid grid-cols-12 pb-2 gap-2">
+                                    <div class="col-span-5">
+                                        <img class="rounded-sm" src="{{ asset('storage/' . $post->image) }}"
                                             alt="">
                                     </div>
-                                    <div class="title" style="flex:1;">
-                                        <h4 class="m-0">
-                                            {{ $post->title }}
-                                        </h4>
+                                    <div class="col-span-7">
+                                        <span
+                                            class="text-gray-950 font-semibold text-[20px] line-clamp-2">{{ $post->title }}</span>
                                     </div>
                                 </div>
-                                <div class="text mt-1">
-                                    <span>
+                                <div class="flex flex-col">
+                                    <span class="text-base leading-tight text-gray-700 font-medium line-clamp-3">
                                         {{ $post->subtitle }}
                                     </span>
                                     @php
+                                        \Carbon\Carbon::setLocale('bn');
                                         $timeAgo = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
+
+                                        // Convert English numbers to Bangla numbers
+                                        $timeAgo = str_replace(
+                                            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                                            ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'],
+                                            $timeAgo,
+                                        );
                                     @endphp
-                                    <div class="time">
-                                        <i class="ri-time-fill"></i>
-                                        <span>{{ $timeAgo }}</span>
-                                    </div>
+                                    <span class="text-sm text-gray-700 font-medium">{{ $timeAgo }}</span>
                                 </div>
                             </div>
                         </a>
@@ -125,47 +134,58 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-12 p-0 px-md-2 px-1 py-md-0 py-4">
+            <div class="col-span-12 md:col-span-3 px-0 md:px-2">
                 @livewire('post-filter')
             </div>
         </div>
     </div>
 
     {{-- video gallery -------------------------- --}}
-    <div class="container topM">
-        <div class="video-gallery row px-1 px-md-3 py-4" style="background: #111">
-            <div class="type pb-4 d-flex align-items-center gap-2"
-                style="font-size: 24px; font-weight:700; color:#ddd; padding-left:3px; line-height:normal;">
-                <i class="ri-film-line"></i>
-                <span>ভিডিও গ্যালারি</span>
-            </div>
-            <div class="col-lg-6 col-md-12 col-sm-12 py-1 px-1">
-                <a href="" style="background: #333; display:block" id="hover">
-                    <iframe class="w-100" src="{{ $videoOne->video }}" title="YouTube video player" frameborder="0"
-                        allowfullscreen></iframe>
-                    <div class="title" style="padding: 2px 7px 7px 10px; color: #eee; font-size:24px;">
-                        <span>{{ \Illuminate\Support\Str::limit($videoOne->title, 100) }}</span>
-                    </div>
-                    @php
-                        use Carbon\Carbon;
-                        Carbon::setLocale('bn');
-                    @endphp
-                    <div class="time mx-2" style="padding-top:0; font-size:14px; color:#a7a7a7; padding-bottom:10px;">
-                        <i class="ri-time-fill"></i>
-                        <span>{{ $videoOne->created_at->diffForHumans() }}</span>
-                    </div>
-                </a>
-            </div>
+    <div class="container mx-auto my-8">
+        <div class="video-gallery bg-gray-900 p-2 md:p-4">
+            <!-- Gallery Title -->
+            <a href="{{ route('video.list') }}">
+                <div class="type pb-4 flex items-center gap-2 text-2xl font-bold text-gray-300 pl-1">
+                    <i class="ri-film-line"></i>
+                    <span>ভিডিও গ্যালারি</span>
+                </div>
+            </a>
 
-            <div class="col-lg-6 col-md-12 col-sm-12">
-                <div class="row">
+            <!-- Main Video Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="col-span-1 lg:col-span-1">
+                    <a href="#" class="block bg-gray-800 hover:bg-gray-700 transition">
+                        <iframe class="w-full h-64" src="{{ $videoOne->video }}" title="YouTube video player"
+                            frameborder="0" allowfullscreen></iframe>
+                        <div class="text-gray-100 text-lg font-semibold p-3">
+                            <span class="line-clamp-2">{{ $videoOne->title }}</span>
+                        </div>
+                        @php
+                            \Carbon\Carbon::setLocale('bn');
+                            $timeAgo = \Carbon\Carbon::parse($videoOne->created_at)->diffForHumans();
+
+                            // Convert English numbers to Bangla numbers
+                            $timeAgo = str_replace(
+                                ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                                ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'],
+                                $timeAgo,
+                            );
+                        @endphp
+                        <div class="text-gray-400 text-sm px-3 pb-3 flex items-center gap-1">
+                            <i class="ri-time-fill"></i>
+                            <span>{{ $timeAgo }}</span>
+                        </div>
+                    </a>
+                </div>
+                <!-- Smaller Videos Section -->
+                <div class="col-span-1 lg:col-span-1 grid grid-cols-2 gap-4">
                     @foreach ($videoFor as $video)
-                        <div class="col-6 py-1 px-1">
-                            <a href="" class="p-2" style="background: #333; display:block" id="hover">
-                                <iframe class="w-100" src="{{ $video->video }}" title="YouTube video player"
+                        <div class="col-span-1">
+                            <a href="#" class="block bg-gray-800 hover:bg-gray-700 transition">
+                                <iframe class="w-full h-40" src="{{ $video->video }}" title="YouTube video player"
                                     frameborder="0" allowfullscreen></iframe>
-                                <div class="title" style="color: #eee; font-size:18px;">
-                                    <span>{{ \Illuminate\Support\Str::limit($video->title, 70) }}</span>
+                                <div class="text-gray-100 text-base font-semibold p-2">
+                                    <span class="line-clamp-2">{{ $video->title }}</span>
                                 </div>
                             </a>
                         </div>
@@ -175,20 +195,24 @@
         </div>
     </div>
 
-    <div class="container topM p-0">
-        <div class="grid-card px-1 px-md-0">
+    <div class="container mx-auto p-0">
+        <div class="grid-card px-2 md:px-4">
             @foreach ($posts['four'] as $post)
-                <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}" class="p-2"
-                    style=" height:max-content; display: block; border:1px solid #ccc;">
-                    <div class="d-flex gap-1">
-                        <div class="text" style="flex:1;">
-                            <p class="m-0 mb-1" style="font-size: 20px; color:#007377;">এখন ট্রেন্ডিং /</p>
-                            <span id="title">
+                <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                    class="block p-2 border border-gray-300" style="height: max-content;">
+                    <div class="flex gap-2">
+                        <!-- Text Section -->
+                        <div class="flex-1">
+                            <p class="m-0 mb-1 text-xl text-teal-600">
+                                {{ $post->category->name }}/
+                            </p>
+                            <span id="title" class="text-base text-gray-800">
                                 {{ $post->title }}
                             </span>
                         </div>
-                        <div class="img" style="width:90px; height:60px;">
-                            <img src="{{ asset('storage/' . $post->image) }}" width="80" height="60"
+                        <!-- Image Section -->
+                        <div class="w-24 h-16">
+                            <img src="{{ asset('storage/' . $post->image) }}" class="w-20 h-full object-cover"
                                 alt="">
                         </div>
                     </div>
@@ -197,78 +221,185 @@
         </div>
     </div>
 
-    {{-- news list and payeer time --}}
 
-    <div class="container topM">
-        <div class="row px-1 px-md-0">
-            <div class="col-lg-9 col-md-12 p-0">
-                <div class="grid-container">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-4">
+            <!-- News List Section -->
+            <div class="col-span-12 md:col-span-8 p-0">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     @foreach ($posts['sixPosts'] as $post)
-                        <a style="color:#444"
-                            href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                        <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                            class="block text-gray-700">
                             <div class="border p-2">
-                                <div class="img" style="width: 100%">
-                                    <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid"
+                                <div class="w-full mb-2">
+                                    <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-auto rounded"
                                         alt="">
                                 </div>
-                                <div class="title py-1" style="font-size: 18px;font-weight:600">
-                                    <span>{{ Str::limit($post->title, 38) }}</span>
+                                <div class="py-1 text-lg font-semibold">
+                                    <span class="line-clamp-2">{{ $post->title }}</span>
                                 </div>
                             </div>
                         </a>
                     @endforeach
                 </div>
             </div>
-            <div class="col-lg-3 col-md-12 pl-lg-2 pl-md-0 pt-md-2px pr-lg-0">
+
+            <!-- Prayer Time & Banner Section -->
+            <div class="col-span-12 md:col-span-4">
                 <div>
-                    <div class="banner">
-                        <img src="{{ asset('banner/namaz.webp') }}" width="100%" alt="">
+                    <!-- Banner -->
+                    <div class="mb-4">
+                        <img src="{{ asset('banner/namaz.webp') }}" class="w-full" alt="">
                     </div>
-                    <table class="table table-bordered m-0" style="border-color: rgb(250, 146, 146);">
+
+                    <!-- Prayer Times Table -->
+                    <table class="table-auto w-full border border-red-300 text-center mb-4">
                         <tbody>
-                            <tr>
-                                <td>ফজর</td>
-                                <td id="fajr-time"></td>
+                            <tr class="border-b border-red-300">
+                                <td class="py-2">ফজর</td>
+                                <td id="fajr-time" class="py-2"></td>
+                            </tr>
+                            <tr class="border-b border-red-300">
+                                <td class="py-2">জোহর</td>
+                                <td id="dhuhr-time" class="py-2"></td>
+                            </tr>
+                            <tr class="border-b border-red-300">
+                                <td class="py-2">আসর</td>
+                                <td id="asr-time" class="py-2"></td>
+                            </tr>
+                            <tr class="border-b border-red-300">
+                                <td class="py-2">মাগরিব</td>
+                                <td id="maghrib-time" class="py-2"></td>
                             </tr>
                             <tr>
-                                <td>জোহর</td>
-                                <td id="dhuhr-time"></td>
-                            </tr>
-                            <tr>
-                                <td>আসর</td>
-                                <td id="asr-time"></td>
-                            </tr>
-                            <tr>
-                                <td>মাগরিব</td>
-                                <td id="maghrib-time"></td>
-                            </tr>
-                            <tr>
-                                <td>ইশা</td>
-                                <td id="isha-time"></td>
+                                <td class="py-2">ইশা</td>
+                                <td id="isha-time" class="py-2"></td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="w-100" style=" text-align:center; background: #a52823; padding:7px;">
-                        <span id="current-date" style="color: #fff; font-size:18px;"></span>
+
+                    <!-- Current Date -->
+                    <div class="w-full text-center bg-red-600 py-2">
+                        <span id="current-date" class="text-white text-lg"></span>
                     </div>
+
+                    <script>
+                        // Function to format date
+                        function formatDate(date) {
+                            const options = {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                weekday: 'long'
+                            };
+                            return date.toLocaleDateString('bn-BD', options);
+                        }
+
+                        document.getElementById('current-date').innerText = formatDate(new Date());
+
+                        // Function to get prayer times using the Aladhan API
+                        function getPrayerTimes(latitude, longitude) {
+                            const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
+
+                            fetch(apiUrl)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data && data.data && data.data.timings) {
+                                        const timings = data.data.timings;
+
+                                        // Set prayer times in Bengali using innerText
+                                        document.getElementById('fajr-time').innerText = convertToBanglaTime(convertTo12HourFormat(
+                                            timings.Fajr));
+                                        document.getElementById('dhuhr-time').innerText = convertToBanglaTime(convertTo12HourFormat(
+                                            timings.Dhuhr));
+                                        document.getElementById('asr-time').innerText = convertToBanglaTime(convertTo12HourFormat(
+                                            timings.Asr));
+                                        document.getElementById('maghrib-time').innerText = convertToBanglaTime(convertTo12HourFormat(
+                                            timings.Maghrib));
+                                        document.getElementById('isha-time').innerText = convertToBanglaTime(convertTo12HourFormat(
+                                            timings.Isha));
+                                    } else {
+                                        console.error("Unexpected data structure:", data);
+                                        alert("Could not retrieve prayer times.");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Error fetching prayer times:", error);
+                                    alert("There was an error fetching prayer times. Please try again later.");
+                                });
+                        }
+
+                        // Function to convert time to Bangla format
+                        function convertToBanglaTime(time) {
+                            const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+                            return time.replace(/\d/g, digit => banglaDigits[digit]);
+                        }
+
+                        // Function to convert 24-hour time format to 12-hour format with "দিন" or "রাত"
+                        function convertTo12HourFormat(time) {
+                            const [hours, minutes] = time.split(':');
+                            let hours12 = parseInt(hours, 10);
+                            let period = '';
+
+                            if (hours12 >= 6 && hours12 < 18) { // 6 AM to 6 PM
+                                period = 'দিন';
+                            } else {
+                                period = 'রাত';
+                            }
+
+                            // Convert to 12-hour format
+                            if (hours12 > 12) {
+                                hours12 -= 12;
+                            } else if (hours12 === 0) {
+                                hours12 = 12;
+                            }
+
+                            return `${hours12}:${minutes} ${period}`;
+                        }
+
+                        // Get user's location and fetch prayer times
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(position => {
+                                const latitude = position.coords.latitude;
+                                const longitude = position.coords.longitude;
+
+                                // Fetch prayer times for the current location
+                                getPrayerTimes(latitude, longitude);
+                            }, error => {
+                                console.error("Error getting location:", error);
+                                alert("Could not get your location. Please enable location services.");
+                            });
+                        } else {
+                            alert("Geolocation is not supported by this browser.");
+                        }
+                    </script>
                 </div>
             </div>
         </div>
     </div>
 
+
     {{-- রাজনীতি জাতীয় news list --------- --}}
 
-    <div class="container topM">
-        <div class="row">
-            <div class="col-lg-6 col-md-12 p-0 px-1 px-md-2">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneNationalPost']->category_id, 'name' => $posts['OneNationalPost']->category->name]) }}"
-                        id="hoverType"><span>জাতীয়</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12">
+            <div class="col-span-12 md:col-span-6 p-0 px-1 px-md-2">
+                @if ($posts['OneNationalPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneNationalPost']->category_id, 'name' => $posts['OneNationalPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>জাতীয়</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="grid grid-cols-12 gap-2 mt-4">
+                    <div class="col-span-12 md:col-span-6 border-r pr-0 md:pr-2">
                         @if ($posts['OneNationalPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneNationalPost']->id, 'name' => $posts['OneNationalPost']->category->name]) }}"
                                 class="d-block" id="hover">
@@ -276,30 +407,29 @@
                                     <img src="{{ asset('storage/' . $posts['OneNationalPost']->image) }}"
                                         class="w-100" alt="">
                                 </div>
-                                <div class="title my-1" id="title-bold">
-                                    <span>{{ $posts['OneNationalPost']->title }}</span>
+                                <div class="my-1">
+                                    <span
+                                        class="text-xl font-bold text-gray-700">{{ $posts['OneNationalPost']->title }}</span>
                                 </div>
-                                <div class="text" id="title-four">
-                                    <span>
+                                <div class="text">
+                                    <span class="text-gray-700 text-lg line-clamp-4">
                                         {{ $posts['OneNationalPost']->subtitle }}
                                     </span>
                                 </div>
                             </a>
-                        @else
                         @endif
                     </div>
-                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                    <div class="col-span-12 md:col-span-6">
                         @foreach ($posts['NationalPost'] as $post)
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                            <a class="block {{ $loop->first ? '' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}"
+                                href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
@@ -307,15 +437,18 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 col-md-12 p-0 px-1 px-md-2">
-                <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OnePoliticsPost']->category_id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
-                        id="hoverType"><span>রাজনীতি</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
+            <div class="col-span-12 md:col-span-6 p-0 px-1 px-md-2">
+                @if ($posts['OnePoliticsPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OnePoliticsPost']->category_id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>রাজনীতি</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="grid grid-cols-12 gap-2 mt-4">
+                    <div class="col-span-12 md:col-span-6 border-r pr-0 md:pr-2">
                         @if ($posts['OnePoliticsPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OnePoliticsPost']->id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
                                 class="d-block" id="hover">
@@ -323,30 +456,29 @@
                                     <img src="{{ asset('storage/' . $posts['OnePoliticsPost']->image) }}"
                                         class="w-100" alt="">
                                 </div>
-                                <div class="title my-1" id="title-bold">
-                                    <span>{{ $posts['OnePoliticsPost']->title }}</span>
+                                <div class="my-1">
+                                    <span
+                                        class="text-xl font-bold text-gray-700">{{ $posts['OnePoliticsPost']->title }}</span>
                                 </div>
-                                <div class="text" id="title-four">
-                                    <span>
+                                <div class="text">
+                                    <span class="text-gray-700 text-lg line-clamp-4">
                                         {{ $posts['OnePoliticsPost']->subtitle }}
                                     </span>
                                 </div>
                             </a>
-                        @else
                         @endif
                     </div>
-                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                    <div class="col-span-12 md:col-span-6">
                         @foreach ($posts['PoliticsPost'] as $post)
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                            <a class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}"
+                                href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
@@ -358,93 +490,94 @@
 
     {{-- সারাদেশ all country news --}}
 
-    <div class="container topM">
-        <div class="row">
-            <div class="col-12 px-md-2 px-1">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneCountryPost']->category_id, 'name' => $posts['OneCountryPost']->category->name]) }}"
-                        id="hoverType"><span>সারাদেশ</span></a>
-                </div>
+    <div class="container mx-auto mt-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12">
+                @if ($posts['OneCountryPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneCountryPost']->category_id, 'name' => $posts['OneCountryPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>সারাদেশ</span>
+                        </a>
+                    </div>
+                @endif
             </div>
 
-            <div class="col-12 px-md-2 px-1">
-            </div>
+            <div class="col-span-12 mt-2">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-            <div class="col-12 mt-2">
-                <div class="row px-1 px-md-2">
-                    <div class="col-lg-4 col-md-12 p-0">
+                    {{-- Main Featured Post --}}
+                    <div class="col-span-1">
                         @if ($posts['OneCountryPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneCountryPost']->id, 'name' => $posts['OneCountryPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block">
+                                <div class="img mb-2">
                                     <img src="{{ asset('storage/' . $posts['OneCountryPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full object-cover" alt="">
                                 </div>
-                                <div class="title my-1" id="title-bold">
-                                    <span>{{ $posts['OneCountryPost']->title }}</span>
-                                </div>
-                                <div class="text" id="title-four">
-                                    <span>
-                                        {{ $posts['OneCountryPost']->subtitle }}
-                                    </span>
-                                </div>
+                                <div class="title line-clamp-2 text-xl font-semibold text-gray-700 mb-1">
+                                    {{ $posts['OneCountryPost']->title }}</div>
+                                <div class="text text-gray-700 text-lg line-clamp-3">
+                                    {{ $posts['OneCountryPost']->subtitle }}</div>
                             </a>
-                        @else
                         @endif
                     </div>
-                    <div class="col-lg-4 col-md-12 px-0 px-md-2 py-4 py-md-0" id="border">
+
+                    {{-- Smaller Featured Posts --}}
+                    <div class="col-span-1 border-t lg:border-t-0 lg:border-l border-gray-300 pt-4 lg:pt-0 lg:pl-4">
                         @foreach ($posts['CountryPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                                class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
                     </div>
 
-                    <div class="col-lg-4 col-md-12 px-0 px-md-2 border-lg-left border-md-left-0" id="border">
+                    <div class="col-span-1 border-t lg:border-t-0 lg:border-l border-gray-300 pt-4 lg:pt-0 lg:pl-4">
                         @foreach ($posts['CountryPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                                class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- আন্তর্জাতিক news list --------- --}}
+    {{-- আন্তর্জাতিক রাজধানী news list --------- --}}
 
-    <div class="container topM">
-        <div class="row">
-            <div class="col-lg-6 col-md-12 p-0 px-1">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneInternationalPost']->category_id, 'name' => $posts['OneInternationalPost']->category->name]) }}"
-                        id="hoverType"><span>আন্তর্জাতিক</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12">
+            <div class="col-span-12 md:col-span-6 p-0 px-1 px-md-2">
+                @if ($posts['OneInternationalPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneInternationalPost']->category_id, 'name' => $posts['OneInternationalPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>আন্তর্জাতিক</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="grid grid-cols-12 gap-2 mt-4">
+                    <div class="col-span-12 md:col-span-6 border-r pr-0 md:pr-2">
                         @if ($posts['OneInternationalPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneInternationalPost']->id, 'name' => $posts['OneInternationalPost']->category->name]) }}"
                                 class="d-block" id="hover">
@@ -452,44 +585,48 @@
                                     <img src="{{ asset('storage/' . $posts['OneInternationalPost']->image) }}"
                                         class="w-100" alt="">
                                 </div>
-                                <div class="title my-1" id="title-bold">
-                                    <span>{{ $posts['OneInternationalPost']->title }}</span>
+                                <div class="my-1">
+                                    <span
+                                        class="text-xl font-bold text-gray-700">{{ $posts['OneInternationalPost']->title }}</span>
                                 </div>
-                                <div class="text" id="title-four">
-                                    <span>
+                                <div class="text">
+                                    <span class="text-gray-700 text-lg line-clamp-4">
                                         {{ $posts['OneInternationalPost']->subtitle }}
                                     </span>
                                 </div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                    <div class="col-span-12 md:col-span-6">
                         @foreach ($posts['InternationalPost'] as $post)
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                            <a class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}"
+                                href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-12 p-0 px-1">
-                <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneCapitalPost']->category_id, 'name' => $posts['OneCapitalPost']->category->name]) }}"
-                        id="hoverType"><span>রাজধানী</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-6 col-md-12" style="border-right: 1px solid #ccc;">
+
+            <div class="col-span-12 md:col-span-6 p-0 px-1 px-md-2">
+                @if ($posts['OneCapitalPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OnePoliticsPost']->category_id, 'name' => $posts['OnePoliticsPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>রাজধানী</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="grid grid-cols-12 gap-2 mt-4">
+                    <div class="col-span-12 md:col-span-6 border-r pr-0 md:pr-2">
                         @if ($posts['OneCapitalPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneCapitalPost']->id, 'name' => $posts['OneCapitalPost']->category->name]) }}"
                                 class="d-block" id="hover">
@@ -497,33 +634,32 @@
                                     <img src="{{ asset('storage/' . $posts['OneCapitalPost']->image) }}"
                                         class="w-100" alt="">
                                 </div>
-                                <div class="title my-1" id="title-bold">
-                                    <span>{{ $posts['OneCapitalPost']->title }}</span>
+                                <div class="my-1">
+                                    <span
+                                        class="text-xl font-bold text-gray-700">{{ $posts['OneCapitalPost']->title }}</span>
                                 </div>
-                                <div class="text" id="title-four">
-                                    <span>
+                                <div class="text">
+                                    <span class="text-gray-700 text-lg line-clamp-4">
                                         {{ $posts['OneCapitalPost']->subtitle }}
                                     </span>
                                 </div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-lg-6 col-md-12 py-4 py-md-0" id="border">
+                    <div class="col-span-12 md:col-span-6">
                         @foreach ($posts['CapitalPost'] as $post)
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                            <a class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}"
+                                href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}">
+                                <div class="flex items-center">
+                                    <div class="img flex-shrink-0 w-24 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title" id="title-tow">
-                                        <span>{{ $post->title }}</span>
-                                    </div>
+                                    <div class="ml-2 title text-gray-700 text-lg line-clamp-2 font-medium">
+                                        {{ $post->title }}</div>
                                 </div>
                             </a>
                         @endforeach
-
                     </div>
                 </div>
             </div>
@@ -531,54 +667,59 @@
     </div>
 
     {{-- বিনোদন news list --}}
-    <div class="container topM px-1">
-        <div class="type py-2"
-            style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-            <i class="ri-file-text-line"></i>
-            <a href="{{ route('category.post', ['id' => $posts['EntertainmentPost']->first()->category_id, 'name' => $posts['EntertainmentPost']->first()->category->name]) }}"
-                id="hoverType"><span>বিনোদন</span></a>
-        </div>
-        <div class="row py-3">
-            <div class="col-lg-4 col-md-12 border-lg-right border-md-right-0" id="border">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        @if ($posts['EntertainmentPost'])
+            <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                <i class="ri-file-text-line"></i>
+                <a href="{{ route('category.post', ['id' => $posts['EntertainmentPost']->first()->category_id, 'name' => $posts['EntertainmentPost']->first()->category->name]) }}"
+                    class="text-gray-700 hover:text-green-600">
+                    <span>বিনোদন</span>
+                </a>
+            </div>
+        @endif
+        <div class="row py-3 grid lg:grid-cols-3 gap-4">
+            <div class="col border-r lg:border-r border-gray-300 pr-4">
                 @foreach ($posts['EntertainmentPost'] as $post)
                     <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                        class="d-block py-3">
-                        <div class="d-flex gap-2 align-items-center">
-                            <div class="img" style="width:90px; height:60px;">
-                                <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                        class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                        <div class="flex items-center">
+                            <div class="img flex-shrink-0 w-24 h-16">
+                                <img class="w-full h-full object-cover" src="{{ asset('storage/' . $post->image) }}"
                                     alt="">
                             </div>
-                            <div class="title" id="title-tow">
+                            <div class="ml-2 title text-lg font-medium text-gray-700">
                                 <span>{{ $post->title }}</span>
                             </div>
                         </div>
                     </a>
                 @endforeach
             </div>
-            <div class="col-lg-4 col-md-12 border-lg-right border-md-right-0">
+
+            <div class="col">
                 @if ($posts['OneEntertainmentPost'])
                     <a
                         href="{{ route('view.post', ['id' => $posts['OneEntertainmentPost']->id, 'name' => $posts['OneEntertainmentPost']->category->name]) }}">
-                        <div class="img w-100">
-                            <img src="{{ asset('storage/' . $posts['OneEntertainmentPost']->image) }}" class="w-100"
-                                alt="">
+                        <div class="flex-shrink-0 img w-full">
+                            <img src="{{ asset('storage/' . $posts['OneEntertainmentPost']->image) }}"
+                                class="w-full h-auto object-cover" alt="">
                         </div>
-                        <div class="title py-2" id="title-bold">
+                        <div class="title py-2 text-xl font-bold text-gray-700">
                             <span>{{ $posts['OneEntertainmentPost']->title }}</span>
                         </div>
                     </a>
                 @endif
             </div>
-            <div class="col-lg-4 col-md-12 py-2 py-md-0" id="border">
+
+            <div class="col border-t lg:border-l lg:border-t-0 border-gray-300 lg:pl-4 pt-4 lg:pt-0">
                 @foreach ($posts['EntertainmentPost'] as $post)
                     <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                        class="d-block py-3">
-                        <div class="d-flex gap-2 align-items-center">
-                            <div class="img" style="width:90px; height:60px;">
-                                <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
+                        class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                        <div class="flex items-center">
+                            <div class="img flex-shrink-0 w-24 h-16 overflow-hidden">
+                                <img class="w-full h-full object-cover" src="{{ asset('storage/' . $post->image) }}"
                                     alt="">
                             </div>
-                            <div class="title" id="title-tow">
+                            <div class="ml-2 title text-lg font-medium text-gray-700">
                                 <span>{{ $post->title }}</span>
                             </div>
                         </div>
@@ -588,68 +729,62 @@
         </div>
     </div>
 
-    {{-- অর্থনীতি news list --}}
 
-    <div class="container topM">
-        <div class="row">
-            <div class="col-lg-9 col-md-12 p-0 px-1">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneSportsPost']->category_id, 'name' => $posts['OneSportsPost']->category->name]) }}"
-                        id="hoverType"><span>খেলা</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-7 col-md-12" style="border-right: 1px solid #ccc;">
-                        <div class="row">
-                            <div class="col-12">
-                                @if ($posts['OneSportsPost'])
-                                    <a href="{{ route('view.post', ['id' => $posts['OneSportsPost']->id, 'name' => $posts['OneSportsPost']->category->name]) }}"
-                                        class="d-block" id="hover">
-                                        <div class="img">
-                                            <img src="{{ asset('storage/' . $posts['OneSportsPost']->image) }}"
-                                                class="w-100" alt="">
-                                        </div>
-                                        <div class="title my-1"
-                                            style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                            <span>{{ $posts['OneSportsPost']->title }}</span>
-                                        </div>
-                                        <div class="my-2" style="border-bottom: 1px solid #ccc"></div>
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-12">
-                                <div class="row">
-                                    @foreach ($posts['TowSportsPost'] as $post)
-                                        <div class="col-6">
-                                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                                class="d-block" id="hover">
-                                                <div class="img">
-                                                    <img src="{{ asset('storage/' . $post->image) }}" class="w-100"
-                                                        alt="">
-                                                </div>
-                                                <div class="title my-1"
-                                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                                    <span>{{ $post->title }}</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    @endforeach
+    {{-- অর্থনীতি এবং খেলা news list --}}
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="flex flex-wrap">
+            <div class="lg:w-3/4 w-full px-0 md:px-1">
+                @if ($posts['OneSportsPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneSportsPost']->category_id, 'name' => $posts['OneSportsPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>খেলা</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-wrap py-3">
+                    <div class="lg:w-7/12 w-full border-0 md:border-r border-gray-300 pr-2">
+                        @if ($posts['OneSportsPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneSportsPost']->id, 'name' => $posts['OneSportsPost']->category->name]) }}"
+                                class="block hover:underline">
+                                <div class="img">
+                                    <img src="{{ asset('storage/' . $posts['OneSportsPost']->image) }}"
+                                        class="w-full" alt="">
                                 </div>
-                            </div>
+                                <div class="title mt-2 font-bold text-xl text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneSportsPost']->title }}</span>
+                                </div>
+                                <div class="my-2 border-b border-gray-300"></div>
+                            </a>
+                        @endif
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach ($posts['TowSportsPost'] as $post)
+                                <div class="col-span-1">
+                                    <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                        class="block">
+                                        <div class="img h-36">
+                                            <img src="{{ asset('storage/' . $post->image) }}"
+                                                class="w-full h-full object-cover" alt="">
+                                        </div>
+                                        <div class="title mt-2 text-xl text-gray-700 line-clamp-2">
+                                            <span>{{ $post->title }}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                    <div class="col-lg-5 col-md-12 py-2 py-md-0" id="border" style="border-right: 1px solid #ccc">
-                        @foreach ($posts['SixSportsPost'] as $post)
+                    <div class="lg:w-5/12 w-full py-2 lg:py-0 border-0 md:border-r px-0 md:px-2 border-gray-300">
+                        @foreach ($posts['EightSportsPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block py-2">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                                class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                                <div class="flex items-center">
+                                    <div class="w-24 flex-shrink-0 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title"
-                                        style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 18px; line-height: 25px;">
+                                    <div class="title text-lg ml-2 text-gray-700 line-clamp-2">
                                         <span>{{ $post->title }}</span>
                                     </div>
                                 </div>
@@ -658,46 +793,42 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-12 p-0 px-md-3 px-1">
-                <div class="type py-2"
-                    style=" border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneEconomyPost']->category_id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
-                        id="hoverType"><span>অর্থনীতি</span></a>
-                </div>
-                <div class="row py-3">
-                    <div class="col-12">
-                        @if ($posts['OneEconomyPost'])
-                            <a href="{{ route('view.post', ['id' => $posts['OneEconomyPost']->id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
-                                    <img src="{{ asset('storage/' . $posts['OneEconomyPost']->image) }}"
-                                        class="w-100" alt="">
-                                </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>{{ $posts['OneEconomyPost']->title }}</span>
-                                </div>
-                                <div class="text mb-1"
-                                    style="font-size: 14px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneEconomyPost']->subtitle }}
-                                    </span>
-                                </div>
-                            </a>
-                        @endif
+            <div class="lg:w-1/4 w-full px-0 md:px-1">
+                @if ($posts['OneEconomyPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneEconomyPost']->category_id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>অর্থনীতি</span>
+                        </a>
                     </div>
-                    <div class="col-12 mt-1" id="border">
+                @endif
+                <div class="py-3">
+                    @if ($posts['OneEconomyPost'])
+                        <a href="{{ route('view.post', ['id' => $posts['OneEconomyPost']->id, 'name' => $posts['OneEconomyPost']->category->name]) }}"
+                            class="block">
+                            <div class="img">
+                                <img src="{{ asset('storage/' . $posts['OneEconomyPost']->image) }}" class="w-full"
+                                    alt="">
+                            </div>
+                            <div class="title mt-2 text-xl text-gray-700 font-semibold line-clamp-2">
+                                <span>{{ $posts['OneEconomyPost']->title }}</span>
+                            </div>
+                            <div class="text text-lg text-gray-700 line-clamp-2 mt-1">
+                                <span>{{ $posts['OneEconomyPost']->subtitle }}</span>
+                            </div>
+                        </a>
+                    @endif
+                    <div class="mt-3">
                         @foreach ($posts['ForEconomyPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block p-0 py-2">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="img" style="width:90px; height:60px;">
-                                        <img class="w-100 h-100" src="{{ asset('storage/' . $post->image) }}"
-                                            alt="">
+                                class="block {{ $loop->first ? 'pt-0' : 'py-2' }} {{ $loop->last ? '' : 'border-b' }}">
+                                <div class="flex items-center">
+                                    <div class="w-24 flex-shrink-0 h-16">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-full object-cover" alt="">
                                     </div>
-                                    <div class="title"
-                                        style="flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #111; font-size: 18px; line-height: 25px;">
+                                    <div class="title ml-2 text-lg text-gray-700 line-clamp-2">
                                         <span>{{ $post->title }}</span>
                                     </div>
                                 </div>
@@ -709,48 +840,45 @@
         </div>
     </div>
 
-    {{-- আইন-আদালত মুখোমুখি স্বাস্থ্য ও চিকিৎসা news list --}}
 
-    <div class="container topM px-1">
-        <div class="row">
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneCourtPost']->category_id, 'name' => $posts['OneCourtPost']->category->name]) }}"
-                        id="hoverType"><span>আইন-আদালত</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-2">
+            <!-- আইন-আদালত Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneCourtPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneCourtPost']->category_id, 'name' => $posts['OneCourtPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>আইন-আদালত</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneCourtPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneCourtPost']->id, 'name' => $posts['OneCourtPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneCourtPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneCourtPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneCourtPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneCourtPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TCourtPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -758,44 +886,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneFacePost']->category_id, 'name' => $posts['OneFacePost']->category->name]) }}"
-                        id="hoverType"><span>মুখোমুখি</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- মুখোমুখি Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneFacePost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneFacePost']->category_id, 'name' => $posts['OneFacePost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>মুখোমুখি</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneFacePost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneFacePost']->id, 'name' => $posts['OneFacePost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
-                                    <img src="{{ asset('storage/' . $posts['OneFacePost']->image) }}" class="w-100"
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
+                                    <img src="{{ asset('storage/' . $posts['OneFacePost']->image) }}" class="w-full"
                                         alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneFacePost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneFacePost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneFacePost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TFacePost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -803,44 +930,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneHealthPost']->category_id, 'name' => $posts['OneHealthPost']->category->name]) }}"
-                        id="hoverType"><span>স্বাস্থ্য ও চিকিৎসা</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- স্বাস্থ্য ও চিকিৎসাSection -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneHealthPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneHealthPost']->category_id, 'name' => $posts['OneHealthPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>স্বাস্থ্য ও চিকিৎসা</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneHealthPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneHealthPost']->id, 'name' => $posts['OneHealthPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneHealthPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneHealthPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneHealthPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneHealthPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="row" id="border">
+                    <div class="w-full">
                         @foreach ($posts['THealthPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -851,18 +977,21 @@
         </div>
     </div>
 
-    {{-- লাইফস্টাইল news list --}}
+
+    {{-- লাইফস্টাইল news list
 
     <div class="container topM px-1">
-        <div class="type py-2"
-            style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-            <i class="ri-file-text-line"></i>
-            <a href="{{ route('category.post', ['id' => $posts['LifestylePost']->first()->category_id, 'name' => $posts['LifestylePost']->first()->category->name]) }}"
-                id="hoverType"><span>লাইফস্টাইল</span></a>
-        </div>
+        @if ($posts['LifestylePost'])
+            <div class="type py-2"
+                style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
+                <i class="ri-file-text-line"></i>
+                <a href="{{ route('category.post', ['id' => $posts['LifestylePost']->first()->category_id, 'name' => $posts['LifestylePost']->first()->category->name]) }}"
+                    id="hoverType"><span>লাইফস্টাইল</span></a>
+            </div>
+        @endif
         <div class="row py-2">
             @foreach ($posts['LifestylePost'] as $post)
-                <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc" id="border">
+                <div class="col-lg-3 col-md-12" style="border-right:1px solid #ccc">
                     <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
                         class="b-block">
                         <div class="img">
@@ -876,48 +1005,46 @@
                 </div>
             @endforeach
         </div>
-    </div>
+    </div> --}}
 
-    <div class="container topM px-1">
-        <div class="row">
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 20px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneReligionPost']->category_id, 'name' => $posts['OneReligionPost']->category->name]) }}"
-                        id="hoverType"><span>ধর্ম</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-2">
+            <!-- ধর্ম Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneReligionPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneReligionPost']->category_id, 'name' => $posts['OneReligionPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>ধর্ম</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneReligionPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneReligionPost']->id, 'name' => $posts['OneReligionPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneReligionPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneReligionPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneReligionPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneReligionPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TReligionPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -925,44 +1052,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneLiteraturePost']->category_id, 'name' => $posts['OneLiteraturePost']->category->name]) }}"
-                        id="hoverType"><span>শিল্প-সাহিত্য</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- শিল্প-সাহিত্য Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneLiteraturePost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneLiteraturePost']->category_id, 'name' => $posts['OneLiteraturePost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>শিল্প-সাহিত্য</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneLiteraturePost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneLiteraturePost']->id, 'name' => $posts['OneLiteraturePost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneLiteraturePost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneLiteraturePost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneLiteraturePost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneLiteraturePost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TLiteraturePost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -970,44 +1096,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneExpatriatePost']->category_id, 'name' => $posts['OneExpatriatePost']->category->name]) }}"
-                        id="hoverType"><span>প্রবাস জীবন</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- প্রবাস জীবন Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneExpatriatePost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneExpatriatePost']->category_id, 'name' => $posts['OneExpatriatePost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>প্রবাস জীবন</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneExpatriatePost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneExpatriatePost']->id, 'name' => $posts['OneExpatriatePost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneExpatriatePost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneExpatriatePost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneExpatriatePost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneExpatriatePost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TExpatriatePost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1017,50 +1142,48 @@
             </div>
         </div>
     </div>
+
 
     {{-- শিক্ষাঙ্গন মজার খবর সাতরং news list --}}
 
-
-    <div class="container topM px-1">
-        <div class="row">
-            <div class="col-lg-4" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneSchoolPost']->category_id, 'name' => $posts['OneSchoolPost']->category->name]) }}"
-                        id="hoverType"><span>শিক্ষাঙ্গন</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-2">
+            <!-- শিক্ষাঙ্গন Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneSchoolPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneSchoolPost']->category_id, 'name' => $posts['OneSchoolPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>শিক্ষাঙ্গন</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneSchoolPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneSchoolPost']->id, 'name' => $posts['OneSchoolPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneSchoolPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneSchoolPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneSchoolPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneSchoolPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TSchoolPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1068,44 +1191,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneFunPost']->category_id, 'name' => $posts['OneFunPost']->category->name]) }}"
-                        id="hoverType"><span>মজার খবর</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- মজার খবরSection -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneFunPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneFunPost']->category_id, 'name' => $posts['OneFunPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>মজার খবর</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneFunPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneFunPost']->id, 'name' => $posts['OneFunPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
-                                    <img src="{{ asset('storage/' . $posts['OneFunPost']->image) }}" class="w-100"
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
+                                    <img src="{{ asset('storage/' . $posts['OneFunPost']->image) }}" class="w-full"
                                         alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneFunPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneFunPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneFunPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TFunPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1113,44 +1235,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneSevenPost']->category_id, 'name' => $posts['OneSevenPost']->category->name]) }}"
-                        id="hoverType"><span>সাতরং</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+
+            <!-- সাতরং Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneSevenPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneSevenPost']->category_id, 'name' => $posts['OneSevenPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>সাতরং</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneSevenPost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneSevenPost']->id, 'name' => $posts['OneSevenPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneSevenPost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneSevenPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneSevenPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneSevenPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TSevenPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1161,93 +1282,45 @@
         </div>
     </div>
 
-    {{-- ফিচার জব কর্নার তথ্যপ্রযুক্তি news list --}}
 
-    <div class="container topM px-1">
-        <div class="row">
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneJobPost']->category_id, 'name' => $posts['OneJobPost']->category->name]) }}"
-                        id="hoverType"><span>জব কর্নার</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
-                        @if ($posts['OneJobPost'])
-                            <a href="{{ route('view.post', ['id' => $posts['OneJobPost']->id, 'name' => $posts['OneJobPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
-                                    <img src="{{ asset('storage/' . $posts['OneJobPost']->image) }}" class="w-100"
-                                        alt="">
-                                </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>{{ $posts['OneJobPost']->title }}</span>
-                                </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneJobPost']->subtitle }}
-                                    </span>
-                                </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
-                            </a>
-                        @endif
+    <div class="container mx-auto my-8 p-2 md:p-4">
+        <div class="grid grid-cols-12 gap-2">
+            <!-- ফিচার Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneFeaturePost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneFeaturePost']->category_id, 'name' => $posts['OneFeaturePost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>ফিচার</span>
+                        </a>
                     </div>
-                    <div class="col-12" id="border">
-                        @foreach ($posts['TJobPost'] as $post)
-                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>{{ $post->title }}</span>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-12" style="border-right:1px solid #ccc">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneFeaturePost']->category_id, 'name' => $posts['OneFeaturePost']->category->name]) }}"
-                        id="hoverType"><span>ফিচার</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
                         @if ($posts['OneFeaturePost'])
                             <a href="{{ route('view.post', ['id' => $posts['OneFeaturePost']->id, 'name' => $posts['OneFeaturePost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
                                     <img src="{{ asset('storage/' . $posts['OneFeaturePost']->image) }}"
-                                        class="w-100" alt="">
+                                        class="w-full" alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
                                     <span>{{ $posts['OneFeaturePost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneFeaturePost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneFeaturePost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
                         @foreach ($posts['TFeaturePost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1255,44 +1328,87 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="type py-2"
-                    style="border-bottom: 4px double #75ac9d; font-size: 24px; font-weight:700; color:#333;">
-                    <i class="ri-file-text-line"></i>
-                    <a href="{{ route('category.post', ['id' => $posts['OneTechnologyPost']->category_id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
-                        id="hoverType"><span>তথ্যপ্রযুক্তি</span></a>
-                </div>
-                <div class="row p-0 py-3">
-                    <div class="col-12">
-                        @if ($posts['OneTechnologyPost'])
-                            <a href="{{ route('view.post', ['id' => $posts['OneTechnologyPost']->id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
-                                class="d-block" id="hover">
-                                <div class="img">
-                                    <img src="{{ asset('storage/' . $posts['OneTechnologyPost']->image) }}"
-                                        class="w-100" alt="">
+
+            <!-- জব কর্নারSection -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneJobPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneJobPost']->category_id, 'name' => $posts['OneJobPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>জব কর্নার</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
+                        @if ($posts['OneJobPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneJobPost']->id, 'name' => $posts['OneJobPost']->category->name]) }}"
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
+                                    <img src="{{ asset('storage/' . $posts['OneJobPost']->image) }}" class="w-full"
+                                        alt="">
                                 </div>
-                                <div class="title my-1"
-                                    style="font-size: 18px; color: #333; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>{{ $posts['OneTechnologyPost']->title }}</span>
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneJobPost']->title }}</span>
                                 </div>
-                                <div class="text mb-1"
-                                    style="font-size: 18px; color: #333; line-height: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    <span>
-                                        {{ $posts['OneTechnologyPost']->subtitle }}
-                                    </span>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneJobPost']->subtitle }}</span>
                                 </div>
-                                <div class="mb-3 mt-1" style="border-bottom:1px solid #ccc"></div>
+                                <div class="my-3 border-b border-gray-300"></div>
                             </a>
                         @endif
                     </div>
-                    <div class="col-12" id="border">
+                    <div class="w-full">
+                        @foreach ($posts['TJobPost'] as $post)
+                            <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
+                                    <span>{{ $post->title }}</span>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- তথ্যপ্রযুক্তি Section -->
+            <div class="col-span-12 md:col-span-4">
+                @if ($posts['OneTechnologyPost'])
+                    <div class="type py-2 border-b-4 border-double border-green-600 text-2xl font-bold text-gray-800">
+                        <i class="ri-file-text-line"></i>
+                        <a href="{{ route('category.post', ['id' => $posts['OneTechnologyPost']->category_id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
+                            class="text-gray-700 hover:text-green-600">
+                            <span>তথ্যপ্রযুক্তি</span>
+                        </a>
+                    </div>
+                @endif
+                <div class="flex flex-col py-3 border-0 md:border-r pr-0 md:pr-2">
+                    <div class="w-full">
+                        @if ($posts['OneTechnologyPost'])
+                            <a href="{{ route('view.post', ['id' => $posts['OneTechnologyPost']->id, 'name' => $posts['OneTechnologyPost']->category->name]) }}"
+                                class="block hover:text-[#007377]">
+                                <div class="overflow-hidden">
+                                    <img src="{{ asset('storage/' . $posts['OneTechnologyPost']->image) }}"
+                                        class="w-full" alt="">
+                                </div>
+                                <div class="my-2 text-xl font-bold text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneTechnologyPost']->title }}</span>
+                                </div>
+                                <div class="mb-1 text-lg text-gray-700 line-clamp-2">
+                                    <span>{{ $posts['OneTechnologyPost']->subtitle }}</span>
+                                </div>
+                                <div class="my-3 border-b border-gray-300"></div>
+                            </a>
+                        @endif
+                    </div>
+                    <div class="w-full">
                         @foreach ($posts['TTechnologyPost'] as $post)
                             <a href="{{ route('view.post', ['id' => $post->id, 'name' => $post->category->name]) }}"
-                                class="d-block d-flex align-items-start gap-2">
-                                <div class="mt-2"
-                                    style="height: 15px; width:17px; border-radius:3px; background:#007377"></div>
-                                <div class="title my-1" id="border"
-                                    style="font-size: 17px; color: #333; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                class="block flex items-start gap-2 border-b py-1">
+                                <div class="mt-2 h-4 w-4 bg-[#007377] rounded"></div>
+                                <div class="text-lg text-gray-800 line-clamp-2 font-medium">
                                     <span>{{ $post->title }}</span>
                                 </div>
                             </a>
@@ -1302,6 +1418,7 @@
             </div>
         </div>
     </div>
+
     @include('layout.footer')
     @include('layout.bakingnews')
     <script src="{{ asset('js/main.js') }}"></script>

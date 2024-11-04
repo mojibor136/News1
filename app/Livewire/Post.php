@@ -36,6 +36,8 @@ class Post extends Component {
     public $image;
     public $editPostId;
 
+    public static $viewPost;
+
     public function mount() {
         $this->districts = Distric::all();
         $this->subdistricts = SubDistric::all();
@@ -53,16 +55,10 @@ class Post extends Component {
             'categoryId' => 'required|exists:categories,id',
         ] );
 
-        if ( auth( 'admin' )->check() ) {
-            $authorId = auth( 'admin' )->id();
-            $role = auth( 'admin' )->user()->role;
-        } elseif ( auth( 'web' )->check() ) {
-            $authorId = auth( 'web' )->id();
-            $role = auth( 'web' )->user()->role;
-        } else {
-            $authorId = null;
-            $role = null;
-        }
+        $role = 'admin';
+        $adminUser = Auth::guard( 'admin' )->user();
+        $authorName = $adminUser->name;
+        $authorId = $adminUser->id;
 
         $imageName = $this->image->store( 'uploads', 'public' );
 
@@ -84,6 +80,7 @@ class Post extends Component {
             'subcategory_id' => $this->subcategoryId,
             'district_id' => $this->districtsId,
             'subdistrict_id' => $this->subdistrictsId,
+            'author_name' => $authorName,
             'author_id' => $authorId,
             'role' => $role,
             'status' => 'pending',
@@ -186,8 +183,13 @@ class Post extends Component {
         );
     }
 
+    public function viewPost( $id ) {
+        self::$viewPost = PostModel::where( 'id', $id )->first();
+    }
+
     public function render() {
-        $posts = PostModel::latest()->where( 'status', 'approve' )->paginate( 10 );
-        return view( 'livewire.post', [ 'posts' => $posts ] );
+        $posts = PostModel::latest()
+        ->where( 'status', 'approve' )
+        ->paginate( 10 );
     }
 }

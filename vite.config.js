@@ -5,10 +5,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
+                'resources/js/app.js',     // আপনার জাভাস্ক্রিপ্ট ফাইল
+                'resources/css/app.css',    // আপনার CSS ফাইল
             ],
-            refresh: true,
+            output: 'public/build',        // আউটপুট ডিরেক্টরি
         }),
     ],
 });

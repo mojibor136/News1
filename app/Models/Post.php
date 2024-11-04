@@ -18,17 +18,14 @@ class Post extends Model {
         'subcategory_id',
         'district_id',
         'subdistrict_id',
+        'author_name',
         'author_id',
         'role',
         'status',
+        'lead',
         'slug',
         'image',
     ];
-
-    public function author() {
-        return $this->belongsTo( User::class, 'author_id' );
-
-    }
 
     public function category() {
         return $this->belongsTo( Category::class );
