@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="bg-gray-100 my-8">
+    <div class="bg-gray-100 my-11">
         <div class="container mx-auto p-2 md:p-4">
             <div class="grid grid-cols-12 py-4">
                 <div class="col-span-12 md:col-span-4 flex justify-center md:justify-start">
@@ -96,6 +96,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="flex items-center justify-center py-2 gap-2 bg-gray-900">
+            <p class="text-lg font-semibold text-white">প্রকাশনায়:</p>
+            <p class="text-lg text-white">মোঃ মজিবর রহমান</p>
         </div>
     </div>
 </body>

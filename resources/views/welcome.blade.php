@@ -12,7 +12,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('build/assets/app-DrNngHbe.css') }}">
     @include('icon.icon')
     @include('layout.scroll')
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
