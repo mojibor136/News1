@@ -14,5 +14,6 @@ class ContactInfo extends Model {
         'fax',
         'phone',
         'email',
+        'publishing',
     ];
 }

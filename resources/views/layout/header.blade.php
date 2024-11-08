@@ -14,8 +14,7 @@
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/bn.min.js"></script>
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app.css') }}"> --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('build/assets/app.css') }}">
 </head>
 
 <style>
@@ -181,15 +180,57 @@
 
         <div class="bg-white md:bg-gray-500 custom-shadow">
             <div class="container mx-auto px-2">
-                <div class="overflow-auto justify-between px-2 flex items-center whitespace-nowrap">
+                <div class="overflow-auto px-2 flex items-center whitespace-nowrap">
                     <a href="{{ route('home') }}"
-                        class="border-0 md:border-r md:border-l md:px-2 pr-1 md:pr-0 py-[5px] md:text-white text-gray-700 md:text-lg text-2xl inline-block"><i
+                        class="border-0 md:border-r md:border-l md:px-2 pr-1 md:pr-1 py-[5px] md:text-white text-gray-700 md:text-lg text-2xl inline-block"><i
                             class="ri-home-3-line"></i>
                     </a>
-                    @foreach ($categories as $category)
+                    @php
+                        // প্রদর্শনের জন্য নির্দিষ্ট ক্রমে থাকা ক্যাটাগরিগুলোর তালিকা
+                        $orderedCategories = [
+                            'জাতীয়',
+                            'আন্তর্জাতিক',
+                            'রাজনীতি',
+                            'অর্থনীতি',
+                            'আইন-আদালত',
+                            'শিক্ষাঙ্গন',
+                            'খেলা',
+                            'অপরাধ',
+                            'তথ্যপ্রযুক্তি',
+                            'বিনোদন',
+                            'ধর্ম',
+                            'স্বাস্থ্য ও চিকিৎসা',
+                            'প্রবাস জীবন',
+                        ];
+
+                        // প্রথমে নির্দিষ্ট ক্রমে থাকা ক্যাটাগরিগুলো ফিল্টার করা হচ্ছে
+                        $sortedCategories = array_filter($orderedCategories, function ($name) use ($categories) {
+                            return $categories->contains('name', $name);
+                        });
+
+                        // বাকি ক্যাটাগরিগুলো বের করা হচ্ছে যেগুলো $orderedCategories-এ নেই
+                        $remainingCategories = $categories->filter(function ($category) use ($orderedCategories) {
+                            return !in_array($category->name, $orderedCategories);
+                        });
+                    @endphp
+
+                    {{-- নির্দিষ্ট ক্রমের ক্যাটাগরিগুলো প্রথমে প্রদর্শন --}}
+                    @foreach ($sortedCategories as $categoryName)
+                        @php
+                            $category = $categories->firstWhere('name', $categoryName);
+                        @endphp
+                        @if ($category)
+                            <a href="{{ route('category.post', ['id' => $category->id, 'name' => $category->name]) }}"
+                                class="px-2 inline-block py-[5px] border-0 md:border-r text-gray-700 md:text-white text-lg">{{ $category->name }}</a>
+                        @endif
+                    @endforeach
+
+                    {{-- বাকি ক্যাটাগরিগুলো শেষে প্রদর্শন --}}
+                    @foreach ($remainingCategories as $category)
                         <a href="{{ route('category.post', ['id' => $category->id, 'name' => $category->name]) }}"
                             class="px-2 inline-block py-[5px] border-0 md:border-r text-gray-700 md:text-white text-lg">{{ $category->name }}</a>
                     @endforeach
+
                 </div>
             </div>
         </div>

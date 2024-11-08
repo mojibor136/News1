@@ -62,6 +62,11 @@
             <input type="email" wire:model="email" class="form-control" id="email" required>
         </div>
 
+        <div class="mb-3">
+            <label for="publishing" class="form-label">publishing</label>
+            <input type="text" wire:model="publishing" class="form-control" id="publishing" required>
+        </div>
+
         <button type="submit" class="btn btn-primary">{{ $isEditing ? 'Update' : 'Submit' }}</button>
     </form>
 
@@ -83,11 +88,13 @@
                                 @endif
                             </div>
                         </div>
-                        <p class="card-text"><strong>Editor:</strong> <span style="font-weight: 600">{{ $info->editorName }}</span></p>
+                        <p class="card-text"><strong>Editor:</strong> <span
+                                style="font-weight: 600">{{ $info->editorName }}</span></p>
                         <p class="card-text"><strong>Address:</strong> {{ $info->address }}</p>
                         <p class="card-text"><strong>Fax:</strong> {{ $info->fax }}</p>
                         <p class="card-text"><strong>Phone:</strong> {{ $info->phone }}</p>
                         <p class="card-text"><strong>Email:</strong> {{ $info->email }}</p>
+                        <p class="card-text"><strong>Publishing:</strong> {{ $info->publishing }}</p>
                         <button class="btn btn-sm btn-warning" wire:click="edit({{ $info->id }})">Edit</button>
                         <button class="btn btn-sm btn-danger" wire:click="delete({{ $info->id }})">Delete</button>
                     </div>

@@ -141,9 +141,7 @@ class PostController extends Controller {
     
     // Handle the image if provided
     if ($request->hasFile('image')) {
-        // Store the image and assign the name to the post
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('images'), $imageName);
+        $imageName = $request->file('image')->store('uploads', 'public');
         $post->image = $imageName;
     }
 

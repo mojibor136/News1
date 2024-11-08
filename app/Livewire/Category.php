@@ -32,6 +32,13 @@ class Category extends Component {
 
     }
 
+    public function updateOrder( $orderedIds ) {
+        foreach ( $orderedIds as $index => $id ) {
+            Category::where( 'id', $id )->update( [ 'position' => $index ] );
+        }
+        session()->flash( 'message', 'Category order updated successfully.' );
+    }
+
     public function deleteCategory( $id ) {
         $category = CategoryModel::find( $id );
 

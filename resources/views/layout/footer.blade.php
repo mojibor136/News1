@@ -22,16 +22,20 @@
                     <div class="flex flex-col gap-1 items-center md:items-start">
                         <div class="w-[300px] text-center md:text-start break-words  whitespace-normal">
                             <span class="text-xl font-semibold text-gray-700">ভারপ্রাপ্ত সম্পাদক:</span>
-                            <span class="text-lg text-gray-700">{{ $contactInfo->editorName }}
-                                {{ $contactInfo->address }}</span>
+                            <span class="text-lg text-gray-700">{{ $contactInfo->editorName ?? 'N/A' }}
+                                {{ $contactInfo->address ?? 'N/A' }}</span>
                         </div>
                         <div class="text-center md:text-start">
                             <span class="text-xl font-semibold text-gray-700">ফ্যাক্স:</span>
-                            <span class="text-lg text-gray-700">{{ $contactInfo->fax }}</span>
+                            <span class="text-lg text-gray-700">{{ $contactInfo->fax ?? 'N/A' }}</span>
                         </div>
                         <div class="text-center md:text-start">
                             <span class="text-xl font-semibold text-gray-700">ফোন:</span>
-                            <span class="text-lg text-gray-700">{{ $contactInfo->phone }}</span>
+                            <span class="text-lg text-gray-700">{{ $contactInfo->phone ?? 'N/A' }}</span>
+                        </div>
+                        <div class="text-center md:text-start">
+                            <span class="text-xl font-semibold text-gray-700">প্রকাশনায়:</span>
+                            <span class="text-lg text-gray-700">{{ $contactInfo->publishing ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -96,10 +100,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="flex items-center justify-center py-2 gap-2 bg-gray-900">
-            <p class="text-lg font-semibold text-white">প্রকাশনায়:</p>
-            <p class="text-lg text-white">মোঃ মজিবর রহমান</p>
         </div>
     </div>
 </body>

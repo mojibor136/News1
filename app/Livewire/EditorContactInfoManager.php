@@ -15,6 +15,7 @@ class EditorContactInfoManager extends Component {
     public $phone;
     public $email;
     public $logo;
+    public $publishing;
     public $contactInfos = [];
     public $editingId = null;
     public $isEditing = false;
@@ -25,6 +26,7 @@ class EditorContactInfoManager extends Component {
         'address' => 'required',
         'fax' => 'required',
         'phone' => 'required',
+        'publishing' => 'required',
         'email' => 'required|email',
         'logo' => 'nullable|image|max:1024',  // Ensure the file is an image and has a size limit
     ];
@@ -60,6 +62,7 @@ class EditorContactInfoManager extends Component {
                 'phone' => $this->phone,
                 'email' => $this->email,
                 'logo' => $logoPath,
+                'publishing' => $this->publishing,
             ] );
 
             session()->flash( 'message', 'Contact information updated successfully!' );
@@ -74,6 +77,7 @@ class EditorContactInfoManager extends Component {
                 'phone' => $this->phone,
                 'email' => $this->email,
                 'logo' => $logoPath,
+                'publishing' => $this->publishing,
             ] );
 
             session()->flash( 'message', 'Contact information added successfully!' );
@@ -91,6 +95,7 @@ class EditorContactInfoManager extends Component {
         $this->fax = $info->fax;
         $this->phone = $info->phone;
         $this->email = $info->email;
+        $this->publishing = $info->publishing;
         $this->logo = null;
         // Do not populate the logo field with the file path
         $this->editId = $id;
@@ -121,6 +126,7 @@ class EditorContactInfoManager extends Component {
         $this->fax = '';
         $this->phone = '';
         $this->email = '';
+        $this->publishing = '';
         $this->logo = '';
         $this->isEditing = false;
         $this->editId = null;
