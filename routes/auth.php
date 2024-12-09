@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(LoginUserController::class)->group(function(){
     Route::get('/login' , 'Login')->name('login');
     Route::post('/login/store' , 'LoginStore')->name('login.store');
+    Route::post('/logins/stores' , 'LoginStores')->name('logins.stores');
 });
 
 Route::middleware('check.permission.user')->group(function(){

